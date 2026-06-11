@@ -1,0 +1,57 @@
+# Buildy MCP Server
+
+Buildy is a hosted MCP server that generates, hosts, and updates interactive web apps. Connect it to any MCP-compatible AI client and ask it to build an app — you get back a live URL in seconds.
+
+## Connect
+
+| Client | Endpoint |
+|--------|----------|
+| Claude, Grok, Gemini, Perplexity | `https://app.buildy.so/mcp` |
+| ChatGPT | `https://app.buildy.so/mcp/chatgpt` (or the Buildy listing in the ChatGPT Apps directory) |
+
+OAuth with Dynamic Client Registration is automatic — clients that support it show a one-time consent screen.
+
+For per-client paste-strings and setup steps, see [buildy.so/clients.txt](https://buildy.so/clients.txt).
+
+## Starter Prompt
+
+Once Buildy is connected, paste this to start a build session:
+
+```
+Help me figure out what to build. Look at what you know about me and suggest 2-3 apps that fit, or ask me up to 3 short questions to find an idea.
+
+Read https://buildy.so/start.md then help me create my first app.
+```
+
+## MCP Tools
+
+Buildy exposes 16 tools. Connected clients discover them automatically via `tools/list`.
+
+| Tool | What it does |
+|------|-------------|
+| `create_app` | Store an agent-authored ES module plus optional UI and CSS, and render it inline. Returns the public app URL. |
+| `update_app` | Edit an existing app by replacing its module/UI/styles or applying exact-string edits with optimistic-concurrency versioning. |
+| `get_app` | Render an existing app inline (where the client supports it) and return its callable API operations and metadata. |
+| `get_app_source` | Return the persisted module, UI, and styles for an existing app plus its current version. |
+| `list_apps` | List the calling user's apps, newest first, with descriptions and capabilities. |
+| `delete_app` | Delete an app's module entry. Pass `purge_storage: true` to also wipe stored state. |
+| `upload_asset` | Store a static asset (image, PDF, dataset) so app code stays small; readable back same-origin. |
+| `rename_app` | Change an app's URL slug. The old URL keeps working by redirecting. |
+| `set_remixable` | Mark an app remixable so visitors get their own editable copy. |
+| `unset_remixable` | Stop allowing remixes; existing remixes survive untouched. |
+| `set_starter_prompt` | Set or clear the prompt prefilled in the chat host when a visitor opens a shared app. |
+| `query_app` | Run a read-only backend operation inside an app module. |
+| `mutate_app` | Run a mutating backend operation inside an app module without editing code. |
+| `submit_feedback` | Record agent-authored feedback (bugs, enhancements, crash reports) about an app. |
+| `list_feedback` | List feedback rows for the caller's apps, newest first. |
+| `set_handle` | Change the signed-in user's handle (the first segment of their app URLs). |
+
+## Documentation
+
+- Full authoring guide: [buildy.so/llms-full.txt](https://buildy.so/llms-full.txt)
+- OpenAPI spec: [app.buildy.so/openapi.json](https://app.buildy.so/openapi.json)
+- Docs: [buildy.so/docs](https://buildy.so/docs)
+
+## Publisher
+
+Published by [Tambo](https://tambo.co).
