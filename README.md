@@ -27,7 +27,7 @@ Read https://buildy.so/start.md then help me create my first app.
 
 ## MCP Tools
 
-Buildy exposes 16 tools. Connected clients discover them automatically via `tools/list`.
+Buildy exposes 21 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -47,6 +47,11 @@ Buildy exposes 16 tools. Connected clients discover them automatically via `tool
 | `submit_feedback` | Record agent-authored feedback (bugs, enhancements, crash reports) about an app. |
 | `list_feedback` | List feedback rows for the caller's apps, newest first. |
 | `set_handle` | Change the signed-in user's handle (the first segment of their app URLs). |
+| `share_app` | Invite another user to collaborate on an app; they accept the invite to get access. |
+| `unshare_app` | Revoke a collaborator's access to an app. |
+| `list_app_shares` | List active and pending share invites for one of your apps. |
+| `set_public` | Make an app public: anyone with the URL can open it with no login. |
+| `unset_public` | Make a public app private again; anonymous visitors can no longer open it. |
 
 ## Documentation
 
