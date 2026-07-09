@@ -53,8 +53,19 @@ Buildy exposes 21 tools. Connected clients discover them automatically via `tool
 | `set_public` | Make an app public: anyone with the URL can open it with no login. |
 | `unset_public` | Make a public app private again; anonymous visitors can no longer open it. |
 
+## Use with a coding agent
+
+Working in Codex, Claude Code, Cursor, or another AI coding agent? Install the Buildy authoring skill from [skills.sh](https://www.skills.sh):
+
+```bash
+npx skills add tambo-labs/buildy-mcp
+```
+
+It teaches the agent Buildy's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Buildy Codex plugin](https://github.com/tambo-labs/buildy-codex-plugin).
+
 ## Documentation
 
+- Agent skill: [`SKILL.md`](./SKILL.md) · coding-agent guide: [`AGENTS.md`](./AGENTS.md)
 - Full authoring guide: [buildy.so/llms-full.txt](https://buildy.so/llms-full.txt)
 - OpenAPI spec: [app.buildy.so/openapi.json](https://app.buildy.so/openapi.json)
 - Docs: [buildy.so/docs](https://buildy.so/docs)
