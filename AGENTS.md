@@ -13,6 +13,7 @@ Buildy is remote and hosted; there is nothing to clone, build, or run. Add the e
 | Claude, Grok, Gemini, Perplexity, and most MCP clients | `https://app.buildy.so/mcp` |
 | ChatGPT | `https://app.buildy.so/mcp/chatgpt` (or the Buildy listing in the ChatGPT Apps directory) |
 | Codex (plugin) | `codex plugin marketplace add https://github.com/tambo-labs/buildy-codex-plugin.git` |
+| Cursor | `https://app.buildy.so/mcp` (plus drop [`.cursor/rules/buildy.mdc`](./.cursor/rules/buildy.mdc) into your project) |
 
 OAuth with Dynamic Client Registration runs automatically: a one-time consent screen, no API key to paste. Anonymous creation works with no auth (the first app mints a short-lived token). Per-client paste-strings and setup steps: [buildy.so/clients.txt](https://buildy.so/clients.txt).
 

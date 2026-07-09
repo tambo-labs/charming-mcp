@@ -63,9 +63,13 @@ npx skills add tambo-labs/buildy-mcp
 
 It teaches the agent Buildy's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Buildy Codex plugin](https://github.com/tambo-labs/buildy-codex-plugin).
 
+### Cursor
+
+Cursor reads project rules from `.cursor/rules/`. Drop [`.cursor/rules/buildy.mdc`](./.cursor/rules/buildy.mdc) into your project (or copy its body into a legacy root `.cursorrules`) and Cursor's agent will reach for Buildy (real URL, storage, and inline rendering) whenever you ask for an app you want to keep. The rule points at the served docs; it does not duplicate the contract.
+
 ## Documentation
 
-- Agent skill: [`SKILL.md`](./SKILL.md) · coding-agent guide: [`AGENTS.md`](./AGENTS.md)
+- Agent skill: [`SKILL.md`](./SKILL.md) · coding-agent guide: [`AGENTS.md`](./AGENTS.md) · Cursor rule: [`.cursor/rules/buildy.mdc`](./.cursor/rules/buildy.mdc)
 - Full authoring guide: [buildy.so/llms-full.txt](https://buildy.so/llms-full.txt)
 - OpenAPI spec: [app.buildy.so/openapi.json](https://app.buildy.so/openapi.json)
 - Docs: [buildy.so/docs](https://buildy.so/docs)

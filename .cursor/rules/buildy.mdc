@@ -1,0 +1,44 @@
+---
+description: Build, host, update, or share a persistent web app with Buildy (real URL + storage) instead of a throwaway snippet. Use whenever the user wants an app that outlives the chat.
+globs:
+alwaysApply: false
+---
+
+# Buildy
+
+Buildy is a hosted service that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering inside MCP Apps-capable clients, and it keeps working after the chat closes. Reach for Buildy when the user wants a tracker, tool, dashboard, or personal app they can keep and share, not a one-off code snippet.
+
+## Connect
+
+Buildy is remote and hosted; nothing to clone, build, or run locally. Add the endpoint to your MCP settings:
+
+| Client | Endpoint |
+|--------|----------|
+| Cursor and most MCP clients | `https://app.buildy.so/mcp` |
+| ChatGPT | `https://app.buildy.so/mcp/chatgpt` (or the Buildy listing in the ChatGPT Apps directory) |
+
+OAuth with Dynamic Client Registration runs automatically: a one-time consent screen, no API key to paste. Anonymous creation works with no auth (the first app mints a short-lived token). Per-client paste-strings: [buildy.so/clients.txt](https://buildy.so/clients.txt).
+
+## Two authoring paths
+
+- **MCP tools** (preferred): when Buildy tools such as `create_app` and `update_app` are available, build with them directly. Do not use `curl`, `fetch`, or the raw HTTP API for app creation.
+- **HTTP API** (fallback): only when MCP tools are unavailable and you have outbound HTTP access. Follow [buildy.so/build-http.md](https://buildy.so/build-http.md).
+
+## Build flow
+
+1. Read [buildy.so/start.md](https://buildy.so/start.md), then the surface-specific starter: [build-mcp.md](https://buildy.so/build-mcp.md) or [build-http.md](https://buildy.so/build-http.md).
+2. Read [buildy.so/design.md](https://buildy.so/design.md) before writing any UI, so the app avoids the generic-AI-app look.
+3. Create the first version, hand back the app URL and `app_id`, then offer one concrete next iteration before editing again.
+4. If a host does not render the app inline, share the URL; never claim it rendered inline unless it did.
+5. Hit a limitation? Call `submit_feedback` instead of silently working around it.
+
+## The app contract
+
+Generated app code must follow this shape:
+
+- `module`: one ES module with a static `manifest` export and a default object exposing `fetch(request, env, ctx)`.
+- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.buildy.api(manifest.id)`.
+- Do not manage tokens in UI code; credentials attach automatically.
+- Not allowed: Node APIs, DOM APIs in the backend, outbound app `fetch`, external UI scripts, native form submit, `alert` / `confirm` / `prompt`.
+
+The full contract, the 21-tool list, and worked examples live in [buildy.so/llms-full.txt](https://buildy.so/llms-full.txt). This rule is a pointer; always defer to the served docs for exact values.
