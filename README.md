@@ -1,33 +1,33 @@
-<img src="buildy-icon.png" alt="Buildy" width="80" />
+<img src="charming-icon.png" alt="Charming" width="80" />
 
-# Buildy MCP Server
+# Charming MCP Server
 
-Buildy is a hosted MCP server that generates, hosts, and updates interactive web apps. Connect it to any MCP-compatible AI client and ask it to build an app — you get back a live URL in seconds.
+Charming is a hosted MCP server that generates, hosts, and updates interactive web apps. Connect it to any MCP-compatible AI client and ask it to build an app — you get back a live URL in seconds.
 
 ## Connect
 
 | Client | Endpoint |
 |--------|----------|
-| Claude, Grok, Gemini, Perplexity | `https://app.buildy.so/mcp` |
-| ChatGPT | `https://app.buildy.so/mcp/chatgpt` (or the Buildy listing in the ChatGPT Apps directory) |
+| Claude, Grok, Gemini, Perplexity | `https://charm.ing/mcp` |
+| ChatGPT | `https://charm.ing/mcp/chatgpt` (or the Charming listing in the ChatGPT Apps directory) |
 
 OAuth with Dynamic Client Registration is automatic — clients that support it show a one-time consent screen.
 
-For per-client paste-strings and setup steps, see [buildy.so/clients.txt](https://buildy.so/clients.txt).
+For per-client paste-strings and setup steps, see [usecharming.com/clients.txt](https://usecharming.com/clients.txt).
 
 ## Starter Prompt
 
-Once Buildy is connected, paste this to start a build session:
+Once Charming is connected, paste this to start a build session:
 
 ```
 Help me figure out what to build. Look at what you know about me and suggest 2-3 apps that fit, or ask me up to 3 short questions to find an idea.
 
-Read https://buildy.so/start.md then help me create my first app.
+Read https://usecharming.com/start.md then help me create my first app.
 ```
 
 ## MCP Tools
 
-Buildy exposes 21 tools. Connected clients discover them automatically via `tools/list`.
+Charming exposes 21 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -55,20 +55,20 @@ Buildy exposes 21 tools. Connected clients discover them automatically via `tool
 
 ## Use with a coding agent
 
-Working in Codex, Claude Code, Cursor, or another AI coding agent? Install the Buildy authoring skill from [skills.sh](https://www.skills.sh):
+Working in Codex, Claude Code, Cursor, or another AI coding agent? Install the Charming authoring skill from [skills.sh](https://www.skills.sh):
 
 ```bash
-npx skills add tambo-labs/buildy-mcp
+npx skills add tambo-labs/charming-mcp
 ```
 
-It teaches the agent Buildy's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Buildy Codex plugin](https://github.com/tambo-labs/buildy-codex-plugin).
+It teaches the agent Charming's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Charming Codex plugin](https://github.com/tambo-labs/buildy-codex-plugin).
 
 ## Documentation
 
 - Agent skill: [`SKILL.md`](./SKILL.md) · coding-agent guide: [`AGENTS.md`](./AGENTS.md)
-- Full authoring guide: [buildy.so/llms-full.txt](https://buildy.so/llms-full.txt)
-- OpenAPI spec: [app.buildy.so/openapi.json](https://app.buildy.so/openapi.json)
-- Docs: [buildy.so/docs](https://buildy.so/docs)
+- Full authoring guide: [usecharming.com/llms-full.txt](https://usecharming.com/llms-full.txt)
+- OpenAPI spec: [charm.ing/openapi.json](https://charm.ing/openapi.json)
+- Docs: [usecharming.com/docs](https://usecharming.com/docs)
 
 ## Publisher
 
