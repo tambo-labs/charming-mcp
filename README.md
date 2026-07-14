@@ -61,7 +61,7 @@ Working in Codex, Claude Code, Cursor, or another AI coding agent? Install the C
 npx skills add tambo-labs/charming-mcp
 ```
 
-It teaches the agent Charming's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Charming Codex plugin](https://github.com/tambo-labs/buildy-codex-plugin).
+It teaches the agent Charming's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Charming Codex plugin](https://github.com/tambo-labs/charming-codex-plugin).
 
 ### Cursor
 
