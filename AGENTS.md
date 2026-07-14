@@ -12,7 +12,8 @@ Charming is remote and hosted; there is nothing to clone, build, or run. Add the
 |--------|----------|
 | Claude, Grok, Gemini, Perplexity, and most MCP clients | `https://charm.ing/mcp` |
 | ChatGPT | `https://charm.ing/mcp/chatgpt` (or the Charming listing in the ChatGPT Apps directory) |
-| Codex (plugin) | `codex plugin marketplace add https://github.com/tambo-labs/buildy-codex-plugin.git` |
+| Codex (plugin) | `codex plugin marketplace add https://github.com/tambo-labs/charming-codex-plugin.git` |
+| Cursor | `https://charm.ing/mcp` (plus drop [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc) into your project) |
 
 OAuth with Dynamic Client Registration runs automatically: a one-time consent screen, no API key to paste. Anonymous creation works with no auth (the first app mints a short-lived token). Per-client paste-strings and setup steps: [usecharming.com/clients.txt](https://usecharming.com/clients.txt).
 

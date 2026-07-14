@@ -61,11 +61,15 @@ Working in Codex, Claude Code, Cursor, or another AI coding agent? Install the C
 npx skills add tambo-labs/charming-mcp
 ```
 
-It teaches the agent Charming's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Charming Codex plugin](https://github.com/tambo-labs/buildy-codex-plugin).
+It teaches the agent Charming's build contract and workflow. The skill itself is [`SKILL.md`](./SKILL.md); [`AGENTS.md`](./AGENTS.md) has connect and authoring instructions for any AI coding agent. Codex users can instead install the bundled [Charming Codex plugin](https://github.com/tambo-labs/charming-codex-plugin).
+
+### Cursor
+
+Cursor reads project rules from `.cursor/rules/`. Drop [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc) into your project (or copy its body into a legacy root `.cursorrules`) and Cursor's agent will reach for Charming (real URL, storage, and inline rendering) whenever you ask for an app you want to keep. The rule points at the served docs; it does not duplicate the contract.
 
 ## Documentation
 
-- Agent skill: [`SKILL.md`](./SKILL.md) · coding-agent guide: [`AGENTS.md`](./AGENTS.md)
+- Agent skill: [`SKILL.md`](./SKILL.md) · coding-agent guide: [`AGENTS.md`](./AGENTS.md) · Cursor rule: [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc)
 - Full authoring guide: [usecharming.com/llms-full.txt](https://usecharming.com/llms-full.txt)
 - OpenAPI spec: [charm.ing/openapi.json](https://charm.ing/openapi.json)
 - Docs: [usecharming.com/docs](https://usecharming.com/docs)
