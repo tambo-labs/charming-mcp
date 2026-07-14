@@ -12,8 +12,8 @@ Charming is remote and hosted; there is nothing to clone, build, or run. Add the
 |--------|----------|
 | Claude, Grok, Gemini, Perplexity, and most MCP clients | `https://charm.ing/mcp` |
 | ChatGPT | `https://charm.ing/mcp/chatgpt` (or the Charming listing in the ChatGPT Apps directory) |
-| Codex (plugin) | `codex plugin marketplace add https://github.com/tambo-labs/buildy-codex-plugin.git` |
-| Cursor | `https://app.buildy.so/mcp` (plus drop [`.cursor/rules/buildy.mdc`](./.cursor/rules/buildy.mdc) into your project) |
+| Codex (plugin) | `codex plugin marketplace add https://github.com/tambo-labs/charming-codex-plugin.git` |
+| Cursor | `https://charm.ing/mcp` (plus drop [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc) into your project) |
 
 OAuth with Dynamic Client Registration runs automatically: a one-time consent screen, no API key to paste. Anonymous creation works with no auth (the first app mints a short-lived token). Per-client paste-strings and setup steps: [usecharming.com/clients.txt](https://usecharming.com/clients.txt).
 
@@ -35,7 +35,7 @@ OAuth with Dynamic Client Registration runs automatically: a one-time consent sc
 Generated app code must follow this shape:
 
 - `module`: one ES module with a static `manifest` export and a default object exposing `fetch(request, env, ctx)`.
-- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.buildy.api(manifest.id)`.
+- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.charming.api(manifest.id)`.
 - Do not manage tokens in UI code; credentials attach automatically.
 - Not allowed: Node APIs, DOM APIs in the backend, outbound app `fetch`, external UI scripts, native form submit, `alert` / `confirm` / `prompt`.
 
