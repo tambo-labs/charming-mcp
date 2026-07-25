@@ -1,0 +1,29 @@
+{
+  "name": "tambo-labs",
+  "owner": {
+    "name": "Tambo Labs",
+    "url": "https://github.com/tambo-labs"
+  },
+  "description": "Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it keeps working after the chat closes.",
+  "plugins": [
+    {
+      "name": "charming",
+      "source": "./plugins/claude-code/charming",
+      "description": "Create, update, and inspect Charming-hosted interactive web apps.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Tambo",
+        "url": "https://github.com/tambo-labs"
+      },
+      "homepage": "https://usecharming.com/",
+      "license": "MIT",
+      "category": "Developer Tools",
+      "keywords": [
+        "charming",
+        "mcp",
+        "web-apps",
+        "developer-tools"
+      ]
+    }
+  ]
+}

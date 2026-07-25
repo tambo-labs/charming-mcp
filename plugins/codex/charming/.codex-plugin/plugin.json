@@ -1,0 +1,42 @@
+{
+  "name": "charming",
+  "version": "0.1.0",
+  "description": "Create, update, and inspect Charming-hosted interactive web apps.",
+  "author": {
+    "name": "Tambo",
+    "url": "https://github.com/tambo-labs"
+  },
+  "homepage": "https://usecharming.com/start.md",
+  "repository": "https://github.com/tambo-labs/charming-mcp",
+  "license": "MIT",
+  "keywords": [
+    "charming",
+    "mcp",
+    "web-apps",
+    "developer-tools"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Charming",
+    "shortDescription": "Build and iterate hosted web apps",
+    "longDescription": "Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it keeps working after the chat closes.",
+    "developerName": "Tambo",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://usecharming.com/",
+    "privacyPolicyURL": "https://usecharming.com/privacy",
+    "termsOfServiceURL": "https://usecharming.com/terms",
+    "brandColor": "#F77348",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "defaultPrompt": [
+      "Build me a personal web app with Charming.",
+      "Update my Charming app from feedback.",
+      "Connect Charming MCP in this session."
+    ]
+  }
+}

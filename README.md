@@ -6,10 +6,12 @@ Charming is a hosted MCP server that generates, hosts, and updates interactive w
 
 ## Connect
 
+<!-- generated:connect-table -->
 | Client | Endpoint |
 |--------|----------|
-| Claude, Grok, Gemini, Perplexity | `https://charm.ing/mcp` |
+| Claude, Grok, Gemini, Perplexity, and most MCP clients | `https://charm.ing/mcp` |
 | ChatGPT | `https://charm.ing/mcp/chatgpt` (or the Charming listing in the ChatGPT Apps directory) |
+<!-- /generated:connect-table -->
 
 OAuth with Dynamic Client Registration is automatic — clients that support it show a one-time consent screen.
 
@@ -27,6 +29,7 @@ Read https://usecharming.com/start.md then help me create my first app.
 
 ## MCP Tools
 
+<!-- generated:tools-table -->
 Charming exposes 21 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
@@ -52,6 +55,7 @@ Charming exposes 21 tools. Connected clients discover them automatically via `to
 | `list_app_shares` | List active and pending share invites for one of your apps. |
 | `set_public` | Make an app public: anyone with the URL can open it with no login. |
 | `unset_public` | Make a public app private again; anonymous visitors can no longer open it. |
+<!-- /generated:tools-table -->
 
 ## Use with a coding agent
 
@@ -66,6 +70,22 @@ It teaches the agent Charming's build contract and workflow. The skill itself is
 ### Cursor
 
 Cursor reads project rules from `.cursor/rules/`. Drop [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc) into your project (or copy its body into a legacy root `.cursorrules`) and Cursor's agent will reach for Charming (real URL, storage, and inline rendering) whenever you ask for an app you want to keep. The rule points at the served docs; it does not duplicate the contract.
+
+## Distribution
+
+This repository is the canonical source for every public Charming integration package. Platform-neutral artifacts are hand-edited; platform adapters are generated from them, so a fact lives in exactly one file.
+
+| Kind | Artifact |
+|------|----------|
+| Platform-neutral (edit these) | [`canonical/facts.json`](./canonical/facts.json), [`SKILL.md`](./SKILL.md), [`AGENTS.md`](./AGENTS.md), [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc), [`charming-icon.png`](./charming-icon.png) |
+| Adapter (generated) | `plugins/cursor/charming`, `plugins/claude-code/charming`, `plugins/codex/charming`, `gemini-extension.json`, `GEMINI.md`, the three marketplace catalogs |
+
+```bash
+node scripts/build-packages.mjs          # regenerate every adapter
+node scripts/build-packages.mjs --check  # fail on drift (runs in CI)
+```
+
+The adapters are not published yet; publishing each one is tracked separately. See [`DISTRIBUTION.md`](./DISTRIBUTION.md) for the layout, the drift checks, and how the Charming monorepo proposes changes here.
 
 ## Documentation
 
