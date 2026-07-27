@@ -8,7 +8,12 @@
     "category": "Developer Tools",
     "brandColor": "#F77348",
     "license": "MIT",
-    "keywords": ["charming", "mcp", "web-apps", "developer-tools"],
+    "keywords": [
+      "charming",
+      "mcp",
+      "web-apps",
+      "developer-tools"
+    ],
     "publisher": {
       "name": "Tambo",
       "url": "https://tambo.co",
@@ -16,6 +21,14 @@
     }
   },
   "version": "0.1.0",
+  "ownedHosts": [
+    "charm.ing",
+    "usecharming.com"
+  ],
+  "externalHosts": [
+    "github.com",
+    "tambo.co"
+  ],
   "endpoints": {
     "mcp": "https://charm.ing/mcp",
     "chatgptMcp": "https://charm.ing/mcp/chatgpt"
@@ -151,11 +164,25 @@
     }
   ],
   "branding": {
-    "forbidden": ["buildy"],
-    "allowedTokens": ["window.buildy"],
-    "exemptFiles": ["DISTRIBUTION.md"]
+    "forbidden": [
+      "buildy"
+    ],
+    "allowedTokens": [
+      "window.charming"
+    ],
+    "exemptFiles": [
+      "DISTRIBUTION.md"
+    ]
   },
   "checks": {
-    "allowedIdentifiers": ["app_id", "purge_storage", "mcp_servers", "cline_mcp_settings"]
+    "allowedIdentifiers": [
+      "app_id",
+      "purge_storage",
+      "mcp_servers",
+      "cline_mcp_settings"
+    ],
+    "fixtureFiles": [
+      "scripts/verify-checker.mjs"
+    ]
   }
 }

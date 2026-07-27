@@ -45,7 +45,7 @@ Generated app code must follow the Charming contract:
 
 - `module` is one ES module with a static `manifest` export and a default object exposing `fetch(request, env, ctx)`.
 - `ui` is one inline JavaScript program that populates `#app`.
-- UI code calls the backend through `window.buildy.api(manifest.id)`.
+- UI code calls the backend through `window.charming.api(manifest.id)`.
 - Do not manage tokens in UI code; credentials attach automatically.
 - No Node APIs, no DOM APIs in the backend, no outbound app `fetch`, no external UI scripts, no native form submit, and no `alert`, `confirm`, or `prompt`.
 

@@ -14,6 +14,7 @@ AGENTS.md                  canonical coding-agent guide
 .cursor/rules/charming.mdc canonical Cursor rule
 charming-icon.png          canonical icon
 scripts/build-packages.mjs generator and drift checker
+scripts/verify-checker.mjs proves the drift checker fails on each drift class
 plugins/<platform>/charming self-contained adapter package (generated)
 gemini-extension.json      Gemini CLI manifest, required at the absolute repo root (generated)
 GEMINI.md                  Gemini context file (generated)
@@ -22,23 +23,29 @@ GEMINI.md                  Gemini context file (generated)
 .agents/plugins/marketplace.json  Codex catalog (generated)
 ```
 
-Hand-edit only the canonical files. Everything else is written by the generator and committed, because the hosts clone this repository rather than build it and must find finished packages.
+Hand-edit only the canonical files and this document. Everything else is written by the generator and committed, because the hosts clone this repository rather than build it and must find finished packages.
+
+`README.md` is the one hybrid: its prose is hand-edited, but the connect and tool tables between `<!-- generated:... -->` markers are written by the generator. Edit the prose freely; never edit inside the markers.
 
 ## Commands
 
 ```bash
 node scripts/build-packages.mjs          # write the adapters
 node scripts/build-packages.mjs --check  # fail on drift
+node scripts/verify-checker.mjs          # prove the drift checker still catches every class
 ```
 
-Node 20 or newer. No dependencies, no install step.
+Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies, no install step. CI runs the last two.
 
 ## What the check enforces
 
 - **Generated parity.** Every adapter file is regenerated in memory and compared byte for byte, so editing a packaged copy fails instead of silently diverging.
-- **Endpoints.** Every `charm.ing` and `usecharming.com` URL anywhere in the repository must be declared in `canonical/facts.json`.
-- **Tool list.** Any "N tools" claim must match the length of `facts.tools`, and any snake_case identifier inside a markdown code span must be a real tool name or an explicit allowlist entry.
-- **Branding.** No stale `buildy` branding outside the runtime API name `window.buildy`, which is the real global that generated apps call. This file is exempt because it documents the rule.
+- **Nothing extra.** Each package must contain exactly its generated files, so a hand-added file or an orphaned package directory fails rather than shipping unnoticed. Byte parity alone would only cover files the generator already knows about.
+- **Canonical inputs are validated first.** `canonical/facts.json` must parse, carry every required key with the right type, and resolve every client to a real endpoint, so a typo stops the run instead of reaching a template as `undefined`. Unterminated YAML frontmatter in a canonical markdown file also stops the run rather than splicing the banner inside the frontmatter.
+- **Endpoints and assets stay ours.** Every endpoint must be https on a host in `facts.ownedHosts`, every other URL on a host in `facts.externalHosts`, and every asset path must resolve inside the repository. Every `charm.ing` and `usecharming.com` URL anywhere in the repository must also be declared in `canonical/facts.json`.
+- **No symlinks.** A symlink anywhere in the tree fails, because a host that copies one package directory would get a dangling link.
+- **Tool list.** Any "N tools" claim must match the length of `facts.tools`, including qualified phrasings such as "N MCP tools". Any snake_case identifier inside a markdown code span or fenced block must be a real tool name or an explicit allowlist entry.
+- **Branding.** No stale `buildy` branding anywhere. The runtime global that generated apps call is `window.charming`; `window.buildy` is a stale name and the check now rejects it. This file is exempt because it documents the rule, and `scripts/verify-checker.mjs` is exempt because it holds deliberate drift fixtures.
 - **Assets and self-containment.** Manifest paths (`logo`, `skills`, `mcpServers`, `composerIcon`) must resolve inside the package and contain no `..` segments, so a host that copies one subdirectory gets a working plugin.
 - **Manifests.** Marketplace and plugin names are kebab-case, sources start with `./`, and every source directory holds its platform's plugin manifest.
 
@@ -66,7 +73,8 @@ Platform-specific wording goes in `canonical/platform-notes/<platform>.md`, whic
 
 The private monorepo (`tambo-ai/charming`) owns product behavior; this repository owns public packaging. Nothing mirrors automatically, in either direction.
 
-- A behavior change that moves a public fact — endpoint, tool set, tool description, docs URL — lands in the monorepo first, then arrives here as an ordinary pull request that edits `canonical/` and reruns the generator.
+- A behavior change that moves a public fact (endpoint, tool set, tool description, docs URL) lands in the monorepo first, then arrives here as an ordinary pull request that edits `canonical/` and reruns the generator.
+- `canonical/facts.json` is one more pinned copy of the MCP tool set, in a repository the monorepo's CI cannot see. A monorepo change that adds or removes a tool must update this repository too; nothing here can detect that on its own.
 - The served docs (`usecharming.com/llms-full.txt` and friends) stay the deeper source for authoring detail. Canonical prose here points at those URLs instead of restating them, so a docs change needs no package release.
 - This repository never receives private source, credentials, reviewer accounts, or unreleased product facts. Everything here is public by construction.
 - Marketplace URLs and fresh-install smoke-test results are recorded here, so they survive independently of any monorepo issue.

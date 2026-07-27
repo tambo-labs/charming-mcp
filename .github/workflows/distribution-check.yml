@@ -14,3 +14,4 @@ jobs:
         with:
           node-version: 24
       - run: node scripts/build-packages.mjs --check
+      - run: node scripts/verify-checker.mjs

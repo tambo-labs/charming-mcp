@@ -39,7 +39,7 @@ OAuth with Dynamic Client Registration runs automatically: a one-time consent sc
 Generated app code must follow this shape:
 
 - `module`: one ES module with a static `manifest` export and a default object exposing `fetch(request, env, ctx)`.
-- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.buildy.api(manifest.id)`.
+- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.charming.api(manifest.id)`.
 - Do not manage tokens in UI code; credentials attach automatically.
 - Not allowed: Node APIs, DOM APIs in the backend, outbound app `fetch`, external UI scripts, native form submit, `alert` / `confirm` / `prompt`.
 
