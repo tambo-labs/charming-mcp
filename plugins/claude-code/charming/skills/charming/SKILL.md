@@ -62,14 +62,14 @@ Declare only the capabilities the app uses in `manifest.capabilities.imports`; t
 | `charming:storage/kv@1.0` | `env.storage`, the key-value store |
 | `charming:storage/blob@1.0` | `env.assets`, for uploaded files |
 | `charming:logging/emit@1.0` | `env.log` |
-| `charming:network/fetch@1.0` | backend `fetch`, claimed apps only |
-| `charming:secrets/fetch@1.0` | `env.fetch`, which substitutes `{{secret:NAME}}` into headers |
+| `charming:network/fetch@1.0` | plain backend `fetch`, claimed apps only |
+| `charming:secrets/fetch@1.0` | sealed `env.fetch` that substitutes `{{secret:NAME}}` into headers, claimed apps only |
 | `charming:browser/<name>@1.0` | a claim-gated browser permission such as camera or microphone |
 | `charming:app/<id>@x.y` | operations from another app |
 
 Two allowlists sit outside `capabilities`, both under `permissions`, and both take exact `https://host` origins:
 
-- `permissions.server.fetch` lists where the backend may call. Both the `charming:network/fetch@1.0` import and this permission are required: origins on their own persist but leave egress blocked, and the server only warns.
+- `permissions.server.fetch` gates every backend egress path, plain and sealed alike. The import and the origins are both required: origins on their own persist but leave egress blocked (the server only warns), and the sealed path denies outright on an empty list.
 - `permissions.browser["img-src"]` is required for external images. Without it the image simply does not render.
 
 Legacy `export default { fetch(request, env, ctx) }` still works, and on a canonical app it serves as the unmatched-path fallback, but a legacy operation carries no method or read-only metadata: it defaults to `POST` and `readOnly: false`, so it cannot be reached through `query_app` or by a viewer. Author operations as routes. `manifest.capabilities.exports` belongs to the older manifest shape and is rejected outright by the current schema, and an app created over MCP must use the canonical contract. Editing an existing legacy app over MCP returns `contract_migration_required`: resend the full canonical source with `migrate_contract: true`, rewriting any legacy `window.buildy` call in the UI to `window.charming`.
