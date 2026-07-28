@@ -43,11 +43,64 @@ Charming exposes 21 tools; connected clients discover them via `tools/list`. The
 
 Generated app code must follow the Charming contract:
 
-- `module` is one ES module with a static `manifest` export and a default object exposing `fetch(request, env, ctx)`.
-- `ui` is one inline JavaScript program that populates `#app`.
-- UI code calls the backend through `window.charming.api(manifest.id)`.
+- `module` is one ES module with two named exports and no required default export:
+  - `manifest`: a plain literal, parsed statically, so no computed values. It carries `$schema` (the current dated manifest schema), `id`, `meta.name`, an optional `meta.icon` of one emoji plus a hex background, and `capabilities.imports` listing only what the app uses.
+  - `routes`: an array of operations. Each has `op` (unique), `method`, `path`, `title`, `description`, `inputSchema`, `outputSchema`, `annotations`, optional `public` and `examples`, and a `handler(input, { env, ctx, request })` that returns a JSON-compatible value. Set `annotations.readOnlyHint` to `true` on reads, or `query_app` and viewers cannot call them.
+- `ui` is one inline JavaScript program that populates `#app` and calls the backend through `window.charming.api(manifest.id).<op>(input)`, which resolves to the value directly and throws on failure.
+- `env.storage` is Workers KV with only `.get(key)`, `.put(key, value)`, `.delete(key)`, and `.list()`. It stores JSON-compatible values directly: never `JSON.stringify` before `put` or `JSON.parse` after `get`.
+- Subscribe with `window.charming.onStateChange(cb)` so the UI updates when the agent runs the app's operations from another session. Apply surgical updates such as `textContent` rather than replacing `innerHTML`, so the user's focus, selection, and typing survive.
 - Do not manage tokens in UI code; credentials attach automatically.
 - No Node APIs, no DOM APIs in the backend, no outbound app `fetch`, no external UI scripts, no native form submit, and no `alert`, `confirm`, or `prompt`.
+
+Legacy `export default { fetch(request, env, ctx) }` and `manifest.capabilities.exports` still work for apps that already use them, but they carry no method or read-only metadata, so an operation defaults to `POST` and `readOnly: false` and stays invisible to API discovery. Author new apps as routes.
+
+```js
+// module
+export const manifest = {
+  $schema: 'https://charm.ing/schema/app-manifest/2026-07-31.json',
+  id: 'counter',
+  meta: { name: 'Counter', icon: { emoji: '➕', bg: '#1f6e68' } },
+  capabilities: { imports: ['charming:storage/kv@1.0'] },
+};
+
+export const routes = [
+  {
+    op: 'increment',
+    method: 'POST',
+    path: '/api/increment',
+    title: 'Increment counter',
+    description: 'Increment the counter and return the new value.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    outputSchema: {
+      type: 'object',
+      required: ['count'],
+      properties: { count: { type: 'integer' } },
+      additionalProperties: false,
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+    handler: async (_input, { env }) => {
+      const count = ((await env.storage.get('count')) ?? 0) + 1;
+      await env.storage.put('count', count);
+      return { count };
+    },
+  },
+];
+
+// ui
+const api = window.charming.api('counter');
+const root = document.getElementById('app');
+root.innerHTML = '<button id="b">+1</button><span id="c">0</span>';
+const display = document.getElementById('c');
+document.getElementById('b').onclick = async () => {
+  const { count } = await api.increment({});
+  display.textContent = count;
+};
+window.charming.onStateChange((e) => {
+  if (e.result && typeof e.result === 'object' && 'count' in e.result) {
+    display.textContent = String(e.result.count);
+  }
+});
+```
 
 ## HTTP fallback
 

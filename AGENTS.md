@@ -34,8 +34,10 @@ OAuth with Dynamic Client Registration runs automatically: a one-time consent sc
 
 Generated app code must follow this shape:
 
-- `module`: one ES module with a static `manifest` export and a default object exposing `fetch(request, env, ctx)`.
-- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.charming.api(manifest.id)`.
+- `module`: one ES module with two named exports and no required default export. `manifest` is a plain literal (parsed statically, so no computed values) carrying `$schema`, `id`, `meta.name`, an optional emoji `meta.icon`, and `capabilities.imports`. `routes` is an array of operations, each with `op`, `method`, `path`, `title`, `description`, `inputSchema`, `outputSchema`, `annotations`, and a `handler(input, { env, ctx, request })` returning a JSON-compatible value. Mark reads with `annotations.readOnlyHint: true` or `query_app` cannot call them.
+- `ui`: one inline JavaScript program that populates `#app` and talks to the backend through `window.charming.api(manifest.id).<op>(input)`. Subscribe with `window.charming.onStateChange(cb)` for live updates, and patch the DOM surgically instead of replacing `innerHTML`.
+- `env.storage` is Workers KV with only `.get`, `.put`, `.delete`, and `.list`, and it stores JSON-compatible values directly. Do not `JSON.stringify` before `put`.
+- Legacy `export default { fetch(request, env, ctx) }` still works for existing apps but carries no method or read-only metadata, so new apps should be routes.
 - Do not manage tokens in UI code; credentials attach automatically.
 - Not allowed: Node APIs, DOM APIs in the backend, outbound app `fetch`, external UI scripts, native form submit, `alert` / `confirm` / `prompt`.
 

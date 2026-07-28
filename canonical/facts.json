@@ -47,7 +47,8 @@
     "llmsFull": "https://usecharming.com/llms-full.txt",
     "openapi": "https://charm.ing/openapi.json",
     "repository": "https://github.com/tambo-labs/charming-mcp",
-    "codexCompatRepository": "https://github.com/tambo-labs/charming-codex-plugin"
+    "codexCompatRepository": "https://github.com/tambo-labs/charming-codex-plugin",
+    "manifestSchema": "https://charm.ing/schema/app-manifest/2026-07-31.json"
   },
   "assets": {
     "icon": "charming-icon.png",
