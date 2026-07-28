@@ -34,9 +34,10 @@ Generated markdown carries a do-not-edit banner. Generated JSON cannot hold a co
 ## Commands
 
 ```bash
-node scripts/build-packages.mjs          # write the adapters
-node scripts/build-packages.mjs --check  # fail on drift
-node scripts/verify-checker.mjs          # prove the drift checker still catches every class
+node scripts/build-packages.mjs           # write the adapters
+node scripts/build-packages.mjs --check   # fail on drift
+node scripts/build-packages.mjs --release # stamp the release marker at the current version
+node scripts/verify-checker.mjs           # prove the drift checker still catches every class
 ```
 
 Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies, no install step. CI runs the last two.
@@ -48,7 +49,7 @@ Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies,
 - **Canonical inputs are validated first.** `canonical/facts.json` must parse, carry every required key with the right type, and resolve every client to a real endpoint, so a typo stops the run instead of reaching a template as `undefined`. Unterminated YAML frontmatter in a canonical markdown file also stops the run rather than splicing the banner inside the frontmatter.
 - **Endpoints and assets stay ours.** Every endpoint must be https on a host in `facts.ownedHosts`, every other URL on a host in `facts.externalHosts`, and every asset path must resolve inside the repository. Every `charm.ing` and `usecharming.com` URL anywhere in the repository must also be declared in `canonical/facts.json`.
 - **No symlinks.** A symlink anywhere in the tree fails, because a host that copies one package directory would get a dangling link.
-- **Content cannot move without a version bump.** Claude Code, Cursor, and Codex each pin an installed plugin to its version string, so regenerated content reaches nobody until that string changes. `canonical/version-lock.json` records the version the current canonical content was released at; changing any canonical input without bumping `version` in `facts.json` fails, and the lock is withheld so a run cannot bless the change.
+- **Content cannot move without a version bump.** Claude Code, Cursor, and Codex each pin an installed plugin to its version string, so regenerated content reaches nobody until that string changes. `canonical/version-lock.json` records the last RELEASED version and the content that shipped with it. Changing a canonical input while `version` still equals the released one fails. Bumping once covers a whole release: edits keep passing while the version differs from the released one, and `--release` stamps the marker when the packages actually go out.
 - **Tool list.** Any "N tools" claim must match the length of `facts.tools`, including qualified phrasings such as "N MCP tools". Any snake_case identifier inside a markdown code span or fenced block must be a real tool name or an explicit allowlist entry.
 - **Branding.** No stale `buildy` branding anywhere. The runtime global that generated apps call is `window.charming`; `window.buildy` is a stale name and the check now rejects it. This file is exempt because it documents the rule, and `scripts/verify-checker.mjs` is exempt because it holds deliberate drift fixtures.
 - **Assets and self-containment.** Manifest paths (`logo`, `skills`, `mcpServers`, `composerIcon`) must resolve inside the package and contain no `..` segments, so a host that copies one subdirectory gets a working plugin.
@@ -70,8 +71,9 @@ Claude and other chat clients connect to the hosted endpoint directly and need n
 
 1. Edit the canonical file: `canonical/facts.json` for metadata and URLs, `SKILL.md`, `AGENTS.md`, or `.cursor/rules/charming.mdc` for prose.
 2. Run `node scripts/build-packages.mjs`.
-3. Bump `version` in `canonical/facts.json`. Any canonical change needs one, or installed plugins never see it.
-4. Commit the canonical edit, the bumped version, the refreshed `version-lock.json`, and the regenerated adapters together.
+3. Bump `version` in `canonical/facts.json` once per release. Without it, installed plugins never see the change.
+4. Commit the canonical edit, the bumped version, and the regenerated adapters together.
+5. When the packages are actually published, run `node scripts/build-packages.mjs --release` and commit the refreshed `canonical/version-lock.json`.
 
 Platform-specific wording goes in `canonical/platform-notes/<platform>.md`, which the generator appends to that platform's skill. `{{mcpEndpoint}}` in a note expands to the canonical MCP endpoint.
 

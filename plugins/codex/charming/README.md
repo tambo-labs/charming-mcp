@@ -4,7 +4,7 @@
 
 # Charming for Codex
 
-Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it keeps working after the chat closes.
+Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it stays live at that URL for anyone you share it with.
 
 ## Install
 

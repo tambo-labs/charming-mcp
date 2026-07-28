@@ -137,13 +137,22 @@ const CASES = [
     mutate: (dir) => append(dir, 'SKILL.md', '\nOne more sentence of guidance.\n'),
   },
   {
-    name: 'version bumped without regenerating the lock',
-    expect: 'canonical/version-lock.json is out of date',
+    // version flows into every plugin manifest, so a bump without regenerating
+    // shows up as manifest drift before the lock is ever consulted.
+    name: 'version bumped without regenerating',
+    expect: 'plugin.json is out of date',
     mutate: (dir) => {
       const facts = readJson(dir, 'canonical/facts.json');
-      facts.version = '0.2.0';
+      // Derived, not literal, so the case cannot silently no-op once the real
+      // version catches up to a hardcoded one.
+      facts.version = `${facts.version}-verify`;
       writeJson(dir, 'canonical/facts.json', facts);
     },
+  },
+  {
+    name: 'release lock missing while everything else is clean',
+    expect: 'canonical/version-lock.json is missing',
+    mutate: (dir) => rmSync(join(dir, 'canonical/version-lock.json')),
   },
   {
     name: 'stale branding in an extensionless file',

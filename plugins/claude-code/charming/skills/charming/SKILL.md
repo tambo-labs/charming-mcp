@@ -22,10 +22,10 @@ Charming is a remote server; there is nothing to clone, build, or run locally. A
 
 | Client | Endpoint |
 |--------|----------|
-| Claude, Grok, Gemini, Perplexity, and most MCP clients | `https://charm.ing/mcp` |
-| ChatGPT | `https://charm.ing/mcp/chatgpt` (or the Charming listing in the ChatGPT Apps directory) |
+| Claude, Claude Code, Cursor, Codex, Gemini CLI, and most MCP clients | `https://charm.ing/mcp` |
+| ChatGPT | the Charming listing in the ChatGPT Apps directory is one click; `https://charm.ing/mcp/chatgpt` is the Developer Mode fallback |
 
-OAuth with Dynamic Client Registration runs automatically on first connect: clients that support it show a one-time consent screen, with no API key to paste. Anonymous app creation also works with no auth (the first app mints a short-lived token). Per-client paste-strings and setup steps live at [usecharming.com/clients.txt](https://usecharming.com/clients.txt).
+Charming's MCP endpoints always require a bearer token. OAuth with Dynamic Client Registration bootstraps one automatically on first connect: clients that support it show a one-time consent screen, with no API key to paste. Anonymous creation with no token is available on the HTTP path only (`POST https://charm.ing/app`), and an unclaimed app has a 7-day TTL until someone claims it. To mint a token by hand, use device pairing: `POST https://charm.ing/api/pair/start`, then poll. Full auth guide: [usecharming.com/auth.md](https://usecharming.com/auth.md). Per-client paste-strings and setup steps: [usecharming.com/clients.txt](https://usecharming.com/clients.txt).
 
 ## MCP workflow
 
@@ -33,7 +33,7 @@ When Charming MCP tools are available, build with the tools directly. Do not use
 
 1. Read the starter guide at [usecharming.com/build-mcp.md](https://usecharming.com/build-mcp.md).
 2. Read the design guide at [usecharming.com/design.md](https://usecharming.com/design.md) before writing UI code.
-3. Create the first version with `create_app({ module, ui, styles? })`.
+3. Create the first version with `create_app({ description, module, ui, styles? })`. `description` is required.
 4. Give the user the returned app URL and `app_id`.
 5. If the host does not render the app inline, share the returned URL so the user can open it directly. Do not claim the app is visible inline unless the host actually rendered it.
 6. Offer one concrete next iteration, then call `update_app` only after the user agrees.
@@ -49,10 +49,30 @@ Generated app code must follow the Charming contract:
 - `ui` is one inline JavaScript program that populates `#app` and calls the backend through `window.charming.api(manifest.id).<op>(input)`, which resolves to the value directly and throws on failure.
 - `env.storage` is Workers KV with only `.get(key)`, `.put(key, value)`, `.delete(key)`, and `.list()`. It stores JSON-compatible values directly: never `JSON.stringify` before `put` or `JSON.parse` after `get`.
 - Subscribe with `window.charming.onStateChange(cb)` so the UI updates when the agent runs the app's operations from another session. Apply surgical updates such as `textContent` rather than replacing `innerHTML`, so the user's focus, selection, and typing survive.
+- `window.charming` also carries what a shared or embedded app needs: `viewer.role` and `viewer.can(op)` to render only what this visitor may do, `user` for the caller's public identity, `login()` to trigger sign-in, `assets` and `images` for files and pictures, plus `openLink`, `sendFollowUp`, `updateContext`, `recordAction`, and `isConnected` / `onConnectionChange`. Neither `viewer` nor `user` is an enforcement boundary; the server gates are.
+- To show an external image inside a Claude or ChatGPT embed, use `window.charming.images.load(url)`, which returns a `data:` URL. Both hosts inject a CSP that blocks a cross-origin `images.proxy(url)` URL.
 - Do not manage tokens in UI code; credentials attach automatically.
-- No Node APIs, no DOM APIs in the backend, no outbound app `fetch`, no external UI scripts, no native form submit, and no `alert`, `confirm`, or `prompt`.
+- The `ui` program runs as a classic script, so no ESM syntax and no top-level `await`.
+- No Node APIs, no DOM APIs in the backend, no external UI scripts, no native form submit, and no `alert`, `confirm`, or `prompt` (they silently no-op in the sandboxed iframe). Outbound backend `fetch` is not banned; it is off until declared, see capabilities below.
 
-Legacy `export default { fetch(request, env, ctx) }` and `manifest.capabilities.exports` still work for apps that already use them, but they carry no method or read-only metadata, so an operation defaults to `POST` and `readOnly: false` and stays invisible to API discovery. Author new apps as routes.
+Declare only the capabilities the app uses in `manifest.capabilities.imports`; the host rejects strings it does not know, so never invent one:
+
+| Import | Grants |
+|--------|--------|
+| `charming:storage/kv@1.0` | `env.storage`, the key-value store |
+| `charming:storage/blob@1.0` | `env.assets`, for uploaded files |
+| `charming:logging/emit@1.0` | `env.log` |
+| `charming:network/fetch@1.0` | backend `fetch`, claimed apps only |
+| `charming:secrets/fetch@1.0` | `env.fetch`, which substitutes `{{secret:NAME}}` into headers |
+| `charming:browser/<name>@1.0` | a claim-gated browser permission such as camera or microphone |
+| `charming:app/<id>@x.y` | operations from another app |
+
+Two allowlists sit outside `capabilities`, both under `permissions`, and both take exact `https://host` origins:
+
+- `permissions.server.fetch` restricts where the backend may call once `charming:network/fetch@1.0` is declared.
+- `permissions.browser["img-src"]` is required for external images. Without it the image simply does not render.
+
+Legacy `export default { fetch(request, env, ctx) }` still works, and on a canonical app it serves as the unmatched-path fallback, but a legacy operation carries no method or read-only metadata: it defaults to `POST` and `readOnly: false`, so it cannot be reached through `query_app` or by a viewer. Author operations as routes. `manifest.capabilities.exports` belongs to the older manifest shape and is rejected outright by the current schema, and an app created over MCP must use the canonical contract. Editing an existing legacy app over MCP returns `contract_migration_required`: resend the full canonical source with `migrate_contract: true`, rewriting any legacy `window.buildy` call in the UI to `window.charming`.
 
 ```js
 // module
@@ -95,7 +115,14 @@ document.getElementById('b').onclick = async () => {
   const { count } = await api.increment({});
   display.textContent = count;
 };
+// e is { kind: 'state-changed', op, source: 'agent' | 'reconnect-resync', ts, result }.
+// onStateChange returns an unsubscribe function.
 window.charming.onStateChange((e) => {
+  if (e.source === 'reconnect-resync') {
+    // The connection was idle too long for the server to say what was missed.
+    // Refetch through a read route, or no-op until the next agent action.
+    return;
+  }
   if (e.result && typeof e.result === 'object' && 'count' in e.result) {
     display.textContent = String(e.result.count);
   }

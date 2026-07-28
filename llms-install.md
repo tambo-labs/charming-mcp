@@ -19,7 +19,7 @@ Add this to Cline's MCP settings (`cline_mcp_settings.json`):
 
 ## Auth
 
-OAuth with Dynamic Client Registration runs automatically on first connect — you'll get a one-time consent screen, no API key to paste. Anonymous app creation also works with no auth (the first app mints a short-lived token).
+The MCP endpoint requires a bearer token, and OAuth with Dynamic Client Registration bootstraps one on first connect: a one-time consent screen, no API key to paste. Anonymous creation with no token is available on the HTTP path only. Full auth guide: https://usecharming.com/auth.md
 
 ## First use
 
@@ -29,4 +29,4 @@ Once connected, paste this to start:
 Read https://usecharming.com/start.md then help me create my first app.
 ```
 
-Charming returns a live URL you can open, pin, or share; the app persists after the chat and any MCP client can keep using it.
+Charming returns a live URL you can open, pin, or share; the app stays live at that URL and any MCP client can keep using it.

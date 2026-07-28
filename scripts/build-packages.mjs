@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Generates every platform adapter in this repository from canonical/.
 //
-//   node scripts/build-packages.mjs           write the adapters
-//   node scripts/build-packages.mjs --check   fail if anything drifted
+//   node scripts/build-packages.mjs            write the adapters
+//   node scripts/build-packages.mjs --check    fail if anything drifted
+//   node scripts/build-packages.mjs --release  stamp the release marker at the current version
 //
 // Canonical inputs (hand-edited): canonical/facts.json, SKILL.md, AGENTS.md,
 // .cursor/rules/charming.mdc, charming-icon.png, canonical/assets/.
@@ -14,6 +15,7 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CHECK = process.argv.includes('--check');
+const RELEASE = process.argv.includes('--release');
 
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 const readBytes = (p) => readFileSync(join(ROOT, p));
@@ -145,10 +147,15 @@ function canonicalInputHash() {
  * Hosts pin an installed plugin to its version string: Claude Code, Cursor, and
  * Codex all read it, and an unchanged version means an installed plugin never
  * receives regenerated content. So content may not change without a bump.
+ *
+ * The lock holds the last RELEASED version and its content, refreshed only by
+ * `--release`. Bumping once therefore covers a whole release: edits keep passing
+ * while the version differs from the released one.
  */
 const canonicalInputs = canonicalInputHash();
 const lock = existsSync(join(ROOT, VERSION_LOCK)) ? JSON.parse(read(VERSION_LOCK)) : null;
-const versionGateViolated = Boolean(lock) && lock.canonicalInputs !== canonicalInputs && lock.version === facts.version;
+const versionGateViolated =
+  !RELEASE && Boolean(lock) && lock.canonicalInputs !== canonicalInputs && lock.version === facts.version;
 if (versionGateViolated) {
   // Reported alongside any content problems rather than short-circuiting, so one
   // run tells you everything. The lock is withheld below so nothing is blessed.
@@ -384,7 +391,6 @@ const ROOT_FILES = {
     mcpServers: { charming: { httpUrl: MCP } },
   }),
   'GEMINI.md': withBanner(canonicalAgents, 'AGENTS.md'),
-  ...(versionGateViolated ? {} : { [VERSION_LOCK]: json({ version: facts.version, canonicalInputs }) }),
 };
 
 /** README blocks the generator owns, keyed by marker name. */
@@ -644,6 +650,25 @@ if (!/\nname:\s*charming\b/.test(canonicalSkill.slice(0, 200))) {
 
 // ---------------------------------------------------------------------------
 
+// Settled last, and only when asked: a run that reports problems must not move
+// the release marker, and an ordinary regenerate must not either.
+if (!lock && CHECK) {
+  fail(`${VERSION_LOCK} is missing. Run: node scripts/build-packages.mjs --release`);
+}
+if (problems.length === 0 && (RELEASE || !lock)) {
+  const desiredLock = json({ version: facts.version, canonicalInputs });
+  const lockPath = join(ROOT, VERSION_LOCK);
+  if ((existsSync(lockPath) ? readFileSync(lockPath, 'utf8') : null) !== desiredLock) {
+    if (CHECK) {
+      fail(`${VERSION_LOCK} is out of date. Run: node scripts/build-packages.mjs --release`);
+    } else {
+      mkdirSync(dirname(lockPath), { recursive: true });
+      writeFileSync(lockPath, desiredLock);
+      written.push(VERSION_LOCK);
+    }
+  }
+}
+
 if (problems.length > 0) {
   console.error(`${problems.length} problem(s):`);
   for (const p of problems) console.error(`  - ${p}`);
@@ -654,7 +679,7 @@ const hash = createHash('sha256');
 for (const rel of [...generatedText.keys()].sort()) hash.update(rel).update(generatedText.get(rel));
 console.log(
   CHECK
-    ? `ok: ${generatedText.size + generatedBinary.size} generated files match canonical/ (${hash.digest('hex').slice(0, 12)})`
+    ? `ok: ${generatedText.size + generatedBinary.size + 1} generated files match canonical/ (${hash.digest('hex').slice(0, 12)})`
     : written.length > 0
       ? `wrote ${written.length} file(s):\n${written.map((f) => `  ${f}`).join('\n')}`
       : 'ok: nothing to write',
