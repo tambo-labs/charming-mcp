@@ -1,0 +1,19 @@
+{
+  "name": "charming",
+  "displayName": "Charming",
+  "version": "0.2.0",
+  "description": "Create, update, and inspect Charming-hosted interactive web apps.",
+  "author": {
+    "name": "Tambo",
+    "url": "https://github.com/tambo-labs"
+  },
+  "homepage": "https://usecharming.com/",
+  "repository": "https://github.com/tambo-labs/charming-mcp",
+  "license": "MIT",
+  "keywords": [
+    "charming",
+    "mcp",
+    "web-apps",
+    "developer-tools"
+  ]
+}

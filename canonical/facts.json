@@ -1,0 +1,198 @@
+{
+  "product": {
+    "name": "Charming",
+    "slug": "charming",
+    "shortDescription": "Build and iterate hosted web apps",
+    "packageDescription": "Create, update, and inspect Charming-hosted interactive web apps.",
+    "longDescription": "Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it stays live at that URL for anyone you share it with.",
+    "category": "Developer Tools",
+    "brandColor": "#F77348",
+    "license": "MIT",
+    "keywords": [
+      "charming",
+      "mcp",
+      "web-apps",
+      "developer-tools"
+    ],
+    "publisher": {
+      "name": "Tambo",
+      "url": "https://tambo.co",
+      "org": "https://github.com/tambo-labs"
+    }
+  },
+  "version": "0.2.0",
+  "ownedHosts": [
+    "charm.ing",
+    "usecharming.com"
+  ],
+  "externalHosts": [
+    "github.com",
+    "tambo.co"
+  ],
+  "endpoints": {
+    "mcp": "https://charm.ing/mcp",
+    "chatgptMcp": "https://charm.ing/mcp/chatgpt"
+  },
+  "urls": {
+    "website": "https://usecharming.com/",
+    "docs": "https://usecharming.com/docs",
+    "privacy": "https://usecharming.com/privacy",
+    "terms": "https://usecharming.com/terms",
+    "clients": "https://usecharming.com/clients.txt",
+    "start": "https://usecharming.com/start.md",
+    "buildMcp": "https://usecharming.com/build-mcp.md",
+    "buildHttp": "https://usecharming.com/build-http.md",
+    "design": "https://usecharming.com/design.md",
+    "llms": "https://usecharming.com/llms.txt",
+    "llmsFull": "https://usecharming.com/llms-full.txt",
+    "openapi": "https://charm.ing/.well-known/openapi.json",
+    "repository": "https://github.com/tambo-labs/charming-mcp",
+    "codexCompatRepository": "https://github.com/tambo-labs/charming-codex-plugin",
+    "manifestSchema": "https://charm.ing/schema/app-manifest/2026-07-31.json",
+    "auth": "https://usecharming.com/auth.md",
+    "pricing": "https://usecharming.com/pricing.md",
+    "httpCreate": "https://charm.ing/app",
+    "pairStart": "https://charm.ing/api/pair/start"
+  },
+  "assets": {
+    "icon": "charming-icon.png",
+    "animatedLogo": "canonical/assets/logo-animated.svg"
+  },
+  "marketplace": {
+    "name": "tambo-labs",
+    "displayName": "Tambo Labs",
+    "owner": {
+      "name": "Tambo Labs",
+      "url": "https://github.com/tambo-labs"
+    }
+  },
+  "defaultPrompts": [
+    "Build me a personal web app with Charming.",
+    "Update my Charming app from feedback.",
+    "Connect Charming MCP in this session."
+  ],
+  "clients": [
+    {
+      "label": "Claude, Claude Code, Cursor, Codex, Gemini CLI, and most MCP clients",
+      "endpoint": "mcp"
+    },
+    {
+      "label": "ChatGPT",
+      "endpoint": "chatgptMcp",
+      "note": "one-click via the Charming listing in the ChatGPT Apps directory; this paste-string is the Developer Mode fallback"
+    }
+  ],
+  "tools": [
+    {
+      "name": "create_app",
+      "summary": "Store an agent-authored module (a `manifest` plus `routes`) with optional UI and CSS, and render it inline. Requires a `description`. Give the user the returned token-free `shareUrl`, never the machine-only `url`."
+    },
+    {
+      "name": "update_app",
+      "summary": "Edit an existing app by replacing its module/UI/styles/description or applying exact-string edits, with optimistic-concurrency versioning."
+    },
+    {
+      "name": "get_app",
+      "summary": "Render an existing app inline (where the client supports it) and return its callable API operations and metadata."
+    },
+    {
+      "name": "get_app_source",
+      "summary": "Return the persisted module, UI, and styles for an existing app plus its current version."
+    },
+    {
+      "name": "list_apps",
+      "summary": "List the caller's apps plus apps shared with them, newest first, with each app's role, description, and capabilities."
+    },
+    {
+      "name": "delete_app",
+      "summary": "Permanently delete an app you own. Irreversible and confirmation-gated: it fails closed until re-invoked with `confirm: true`. Pass `purge_storage: true` to also wipe stored state."
+    },
+    {
+      "name": "upload_asset",
+      "summary": "Store a static asset (image, PDF, dataset) so app code stays small; readable back same-origin."
+    },
+    {
+      "name": "rename_app",
+      "summary": "Change an app's URL slug. The old URL keeps working by redirecting."
+    },
+    {
+      "name": "set_remixable",
+      "summary": "Mark an app remixable so visitors get their own editable copy."
+    },
+    {
+      "name": "unset_remixable",
+      "summary": "Stop allowing remixes; existing remixes survive untouched."
+    },
+    {
+      "name": "set_starter_prompt",
+      "summary": "Set or clear the prompt prefilled in the chat host when a visitor opens a shared app."
+    },
+    {
+      "name": "query_app",
+      "summary": "Run a read-only backend operation inside an app module."
+    },
+    {
+      "name": "mutate_app",
+      "summary": "Run a mutating backend operation inside an app module without editing code."
+    },
+    {
+      "name": "submit_feedback",
+      "summary": "Record agent-authored feedback (bugs, enhancements, crash reports) about an app."
+    },
+    {
+      "name": "list_feedback",
+      "summary": "List feedback rows for the caller's apps, newest first."
+    },
+    {
+      "name": "set_handle",
+      "summary": "Change the signed-in user's handle (the first segment of their app URLs)."
+    },
+    {
+      "name": "share_app",
+      "summary": "Invite someone to an app as `collaborator` (default), `end-user` (run and write data, cannot edit source), or `viewer` (read-only). Calling it again with a role changes their role in place."
+    },
+    {
+      "name": "unshare_app",
+      "summary": "Revoke access for any grantee, whether the invitation is still pending or already accepted."
+    },
+    {
+      "name": "list_app_shares",
+      "summary": "List active and pending share invites for one of your apps."
+    },
+    {
+      "name": "set_public",
+      "summary": "Make an app public: anyone with the URL can open it with no login and read AND write its shared data. Warn the user that every anonymous visitor shares one data pool, so anyone with the URL can overwrite or wipe it."
+    },
+    {
+      "name": "unset_public",
+      "summary": "Make a public app private again; anonymous visitors can no longer open it."
+    }
+  ],
+  "branding": {
+    "forbidden": [
+      "buildy"
+    ],
+    "allowedTokens": [
+      "window.charming",
+      "legacy `window.buildy`"
+    ],
+    "exemptFiles": [
+      "DISTRIBUTION.md"
+    ]
+  },
+  "checks": {
+    "allowedIdentifiers": [
+      "app_id",
+      "purge_storage",
+      "mcp_servers",
+      "cline_mcp_settings",
+      "contract_migration_required",
+      "migrate_contract",
+      "invalid_manifest_schema",
+      "token_revoked_post_claim"
+    ],
+    "fixtureFiles": [
+      "scripts/verify-checker.mjs"
+    ]
+  }
+}

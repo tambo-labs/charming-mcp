@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="140" height="140" role="img" aria-labelledby="title">
+  <title id="title">Charming, blinking</title>
+  <defs>
+    <filter id="chrm-mascot-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.075" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+  <style>
+    .chrm-mascot-pupil {
+      fill: #151410;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: chrm-mascot-blink 6s ease-in-out infinite;
+    }
+    @keyframes chrm-mascot-blink {
+      0%,
+      15%,
+      21%,
+      100% {
+        transform: scaleY(1);
+      }
+      17.5%,
+      18.5% {
+        transform: scaleY(0.08);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .chrm-mascot-pupil {
+        animation: none;
+      }
+    }
+  </style>
+  <g filter="url(#chrm-mascot-grain)">
+    <path fill="#f77448" stroke="#151410" stroke-width="12px" d="M279.074,42.499C293.511,41.019 290.884,62.572 310.836,81.573C330.787,100.574 343.84,93.301 354.993,120.442C366.145,147.583 338.821,194.392 352.874,212.728C366.927,231.065 384.574,217.078 400.03,249.102C415.486,281.126 395.274,304.778 388.646,329.136C382.018,353.493 400.205,369.389 375.503,406.793C350.801,444.197 292.874,454.488 256.231,459.455C219.589,464.423 170.001,437.843 141.445,406.802C112.888,375.762 104.898,336.966 106.798,321.724C108.698,306.482 113.311,309.537 120.792,299.483C128.272,289.429 116.02,272.216 116.324,256C116.628,239.784 118.081,229.9 130.308,207.118C142.536,184.336 150.074,211.818 165.021,192.432C174.269,180.436 178.045,153.463 185.098,138.152C192.152,122.841 199.917,118.801 207.881,119.485C215.844,120.169 219.284,127.766 229.084,122.707C238.884,117.648 248.227,99.435 255.21,78.546C262.193,57.657 267.462,43.69 279.074,42.499Z" />
+    <path fill="none" stroke="#fbf0d9" stroke-width="12px" stroke-linecap="round" d="M289,109C291.405,115.002 296.224,116.345 302,118C307.776,119.655 314.584,123.498 318,129.55C321.416,135.603 323.353,139.878 322.472,149.109" />
+    <ellipse class="chrm-mascot-pupil" cx="239" cy="269" rx="9" ry="15" />
+    <ellipse class="chrm-mascot-pupil" cx="281" cy="268" rx="9" ry="15" />
+  </g>
+</svg>

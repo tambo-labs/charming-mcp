@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "charming": {
+      "type": "http",
+      "url": "https://charm.ing/mcp"
+    }
+  }
+}
