@@ -17,4 +17,6 @@ Then install **Charming** from the **Tambo Labs** marketplace in Cursor.
 - The Charming MCP server at `https://charm.ing/mcp`.
 - The canonical `charming` skill: the MCP-first authoring workflow and the app contract.
 
+Every file in this directory is generated from `canonical/` by `scripts/build-packages.mjs`, including the JSON manifests, which cannot carry a comment. Edit `canonical/`, not these copies.
+
 Full authoring guide: <https://usecharming.com/llms-full.txt>. Published by Tambo (<https://tambo.co>).

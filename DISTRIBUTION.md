@@ -7,6 +7,7 @@ This repository is the canonical public source for Charming integration packages
 ```text
 canonical/
   facts.json               endpoints, metadata, assets, tool list, marketplace identity
+  version-lock.json        the version the current canonical content was released at (generated)
   platform-notes/          per-platform additions appended to the generated skill
   assets/                  shared art that is not already at the repo root
 SKILL.md                   canonical agent skill (also what `npx skills add` installs)
@@ -15,6 +16,7 @@ AGENTS.md                  canonical coding-agent guide
 charming-icon.png          canonical icon
 scripts/build-packages.mjs generator and drift checker
 scripts/verify-checker.mjs proves the drift checker fails on each drift class
+.gitattributes             marks generated paths, which JSON cannot say for itself
 plugins/<platform>/charming self-contained adapter package (generated)
 gemini-extension.json      Gemini CLI manifest, required at the absolute repo root (generated)
 GEMINI.md                  Gemini context file (generated)
@@ -26,6 +28,8 @@ GEMINI.md                  Gemini context file (generated)
 Hand-edit only the canonical files and this document. Everything else is written by the generator and committed, because the hosts clone this repository rather than build it and must find finished packages.
 
 `README.md` is the one hybrid: its prose is hand-edited, but the connect and tool tables between `<!-- generated:... -->` markers are written by the generator. Edit the prose freely; never edit inside the markers.
+
+Generated markdown carries a do-not-edit banner. Generated JSON cannot hold a comment, so those paths are listed in `.gitattributes` as `linguist-generated` and named in each package's README instead.
 
 ## Commands
 
@@ -44,6 +48,7 @@ Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies,
 - **Canonical inputs are validated first.** `canonical/facts.json` must parse, carry every required key with the right type, and resolve every client to a real endpoint, so a typo stops the run instead of reaching a template as `undefined`. Unterminated YAML frontmatter in a canonical markdown file also stops the run rather than splicing the banner inside the frontmatter.
 - **Endpoints and assets stay ours.** Every endpoint must be https on a host in `facts.ownedHosts`, every other URL on a host in `facts.externalHosts`, and every asset path must resolve inside the repository. Every `charm.ing` and `usecharming.com` URL anywhere in the repository must also be declared in `canonical/facts.json`.
 - **No symlinks.** A symlink anywhere in the tree fails, because a host that copies one package directory would get a dangling link.
+- **Content cannot move without a version bump.** Claude Code, Cursor, and Codex each pin an installed plugin to its version string, so regenerated content reaches nobody until that string changes. `canonical/version-lock.json` records the version the current canonical content was released at; changing any canonical input without bumping `version` in `facts.json` fails, and the lock is withheld so a run cannot bless the change.
 - **Tool list.** Any "N tools" claim must match the length of `facts.tools`, including qualified phrasings such as "N MCP tools". Any snake_case identifier inside a markdown code span or fenced block must be a real tool name or an explicit allowlist entry.
 - **Branding.** No stale `buildy` branding anywhere. The runtime global that generated apps call is `window.charming`; `window.buildy` is a stale name and the check now rejects it. This file is exempt because it documents the rule, and `scripts/verify-checker.mjs` is exempt because it holds deliberate drift fixtures.
 - **Assets and self-containment.** Manifest paths (`logo`, `skills`, `mcpServers`, `composerIcon`) must resolve inside the package and contain no `..` segments, so a host that copies one subdirectory gets a working plugin.
@@ -65,7 +70,8 @@ Claude and other chat clients connect to the hosted endpoint directly and need n
 
 1. Edit the canonical file: `canonical/facts.json` for metadata and URLs, `SKILL.md`, `AGENTS.md`, or `.cursor/rules/charming.mdc` for prose.
 2. Run `node scripts/build-packages.mjs`.
-3. Commit the canonical edit and the regenerated adapters together.
+3. Bump `version` in `canonical/facts.json`. Any canonical change needs one, or installed plugins never see it.
+4. Commit the canonical edit, the bumped version, the refreshed `version-lock.json`, and the regenerated adapters together.
 
 Platform-specific wording goes in `canonical/platform-notes/<platform>.md`, which the generator appends to that platform's skill. `{{mcpEndpoint}}` in a note expands to the canonical MCP endpoint.
 

@@ -130,6 +130,27 @@ const CASES = [
     mutate: (dir) => append(dir, 'AGENTS.md', '\n```js\nawait frobnicate_app({ id })\n```\n'),
   },
   {
+    // The version string is what every host uses to decide an installed plugin
+    // needs updating, so content may not move without it moving too.
+    name: 'canonical content changed without a version bump',
+    expect: 'bump "version" in canonical/facts.json',
+    mutate: (dir) => append(dir, 'SKILL.md', '\nOne more sentence of guidance.\n'),
+  },
+  {
+    name: 'version bumped without regenerating the lock',
+    expect: 'canonical/version-lock.json is out of date',
+    mutate: (dir) => {
+      const facts = readJson(dir, 'canonical/facts.json');
+      facts.version = '0.2.0';
+      writeJson(dir, 'canonical/facts.json', facts);
+    },
+  },
+  {
+    name: 'stale branding in an extensionless file',
+    expect: 'stale branding',
+    mutate: (dir) => append(dir, '.gitattributes', '\n# buildy leftovers\n'),
+  },
+  {
     name: 'README generated marker duplicated',
     expect: 'exactly one',
     mutate: (dir) => append(dir, 'README.md', '\n<!-- generated:tools-table -->\n<!-- /generated:tools-table -->\n'),

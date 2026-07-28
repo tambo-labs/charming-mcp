@@ -1,0 +1,9 @@
+# Generated from canonical/ by scripts/build-packages.mjs. Edit canonical/, not these.
+# JSON manifests cannot carry a do-not-edit comment, so they are marked here.
+plugins/** linguist-generated=true
+.agents/plugins/marketplace.json linguist-generated=true
+.claude-plugin/marketplace.json linguist-generated=true
+.cursor-plugin/marketplace.json linguist-generated=true
+canonical/version-lock.json linguist-generated=true
+gemini-extension.json linguist-generated=true
+GEMINI.md linguist-generated=true

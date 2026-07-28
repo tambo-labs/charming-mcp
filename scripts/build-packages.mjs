@@ -121,6 +121,43 @@ const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const problems = [];
 const fail = (message) => problems.push(message);
 
+const VERSION_LOCK = 'canonical/version-lock.json';
+
+/**
+ * Fingerprint of everything that reaches a package except the version itself,
+ * so a content change can be told apart from a version-only bump.
+ */
+function canonicalInputHash() {
+  const hash = createHash('sha256');
+  const withoutVersion = JSON.parse(read('canonical/facts.json'));
+  delete withoutVersion.version;
+  hash.update(JSON.stringify(withoutVersion));
+  for (const path of ['SKILL.md', 'AGENTS.md', '.cursor/rules/charming.mdc']) hash.update(read(path));
+  const notesDir = join(ROOT, 'canonical/platform-notes');
+  if (existsSync(notesDir)) {
+    for (const name of readdirSync(notesDir).sort()) hash.update(name).update(read(`canonical/platform-notes/${name}`));
+  }
+  for (const rel of Object.values(facts.assets)) hash.update(readBytes(rel));
+  return hash.digest('hex').slice(0, 16);
+}
+
+/**
+ * Hosts pin an installed plugin to its version string: Claude Code, Cursor, and
+ * Codex all read it, and an unchanged version means an installed plugin never
+ * receives regenerated content. So content may not change without a bump.
+ */
+const canonicalInputs = canonicalInputHash();
+const lock = existsSync(join(ROOT, VERSION_LOCK)) ? JSON.parse(read(VERSION_LOCK)) : null;
+const versionGateViolated = Boolean(lock) && lock.canonicalInputs !== canonicalInputs && lock.version === facts.version;
+if (versionGateViolated) {
+  // Reported alongside any content problems rather than short-circuiting, so one
+  // run tells you everything. The lock is withheld below so nothing is blessed.
+  fail(
+    `canonical content changed but version is still ${facts.version}. ` +
+      'Installed plugins only update when the version string changes, so bump "version" in canonical/facts.json.',
+  );
+}
+
 /** Index just past a document's closing frontmatter fence, or -1 when it has none. */
 function frontmatterEnd(markdown) {
   if (!markdown.startsWith('---\n')) return -1;
@@ -154,10 +191,11 @@ const author = {
   url: facts.product.publisher.org,
 };
 
-function packageReadme(platform, installSteps) {
+function packageReadme(platform, installSteps, headerImage) {
   return [
     BANNER,
     '',
+    ...(headerImage ? [`<img src="${headerImage}" alt="Charming" width="160">`, ''] : []),
     `# Charming for ${platform}`,
     '',
     facts.product.longDescription,
@@ -170,6 +208,8 @@ function packageReadme(platform, installSteps) {
     '',
     `- The Charming MCP server at \`${MCP}\`.`,
     '- The canonical `charming` skill: the MCP-first authoring workflow and the app contract.',
+    '',
+    'Every file in this directory is generated from `canonical/` by `scripts/build-packages.mjs`, including the JSON manifests, which cannot carry a comment. Edit `canonical/`, not these copies.',
     '',
     `Full authoring guide: <${facts.urls.llmsFull}>. Published by ${facts.product.publisher.name} (<${facts.product.publisher.url}>).`,
     '',
@@ -278,6 +318,7 @@ const PLATFORMS = {
           '',
           'Then restart Codex, open **Plugins**, choose **Tambo Labs**, install **Charming**, and start a new thread.',
         ].join('\n'),
+        'assets/logo-animated.svg',
       ),
     },
     assets: {
@@ -343,6 +384,7 @@ const ROOT_FILES = {
     mcpServers: { charming: { httpUrl: MCP } },
   }),
   'GEMINI.md': withBanner(canonicalAgents, 'AGENTS.md'),
+  ...(versionGateViolated ? {} : { [VERSION_LOCK]: json({ version: facts.version, canonicalInputs }) }),
 };
 
 /** README blocks the generator owns, keyed by marker name. */
@@ -445,7 +487,12 @@ function allFiles(dir = ROOT) {
 }
 
 const REPO_FILES = allFiles();
-const isTextFile = (name) => TEXT_EXTENSIONS.has(name.slice(name.lastIndexOf('.')));
+// Extensionless files carry text too, and the scans would otherwise skip them.
+const TEXT_NAMES = new Set(['LICENSE', 'NOTICE', '.gitattributes', '.gitignore']);
+const isTextFile = (path) => {
+  const name = path.slice(path.lastIndexOf(sep) + 1);
+  return TEXT_NAMES.has(name) || TEXT_EXTENSIONS.has(name.slice(name.lastIndexOf('.')));
+};
 
 const KNOWN_URLS = new Set([...Object.values(facts.endpoints), ...Object.values(facts.urls)]);
 const ALLOWED_IDENTIFIERS = new Set(facts.checks.allowedIdentifiers);
