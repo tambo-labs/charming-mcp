@@ -16,6 +16,8 @@ AGENTS.md                  canonical coding-agent guide
 charming-icon.png          canonical icon
 scripts/build-packages.mjs generator and drift checker
 scripts/verify-checker.mjs proves the drift checker fails on each drift class
+scripts/lib/json-schema-lite.mjs dependency-free validator for the vendored schemas below
+schemas/agent-plugins/1.0.0/     vendored plugin.schema.json and mcp.schema.json (never fetched at build time)
 .gitattributes             marks generated paths, which JSON cannot say for itself
 plugins/<platform>/charming self-contained adapter package (generated)
 gemini-extension.json      Gemini CLI manifest, required at the absolute repo root (generated)
@@ -40,7 +42,7 @@ node scripts/build-packages.mjs --release # stamp the release marker at the curr
 node scripts/verify-checker.mjs           # prove the drift checker still catches every class
 ```
 
-Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies, no install step. CI runs the last two.
+Node 20.11 or newer (the generator uses `import.meta.dirname`). No third-party dependencies, no install step: schema validation for the Agent Plugins package uses the hand-written, dependency-free `scripts/lib/json-schema-lite.mjs` against the vendored schemas in `schemas/agent-plugins/1.0.0/`, not a fetched copy. CI runs the last two.
 
 ## What the check enforces
 
@@ -54,6 +56,7 @@ Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies,
 - **Branding.** No stale `buildy` branding anywhere. The runtime global that generated apps call is `window.charming`; `window.buildy` is a stale name and the check now rejects it. This file is exempt because it documents the rule, and `scripts/verify-checker.mjs` is exempt because it holds deliberate drift fixtures.
 - **Assets and self-containment.** Manifest paths (`logo`, `skills`, `mcpServers`, `composerIcon`) must resolve inside the package and contain no `..` segments, so a host that copies one subdirectory gets a working plugin.
 - **Manifests.** Marketplace and plugin names are kebab-case, sources start with `./`, and every source directory holds its platform's plugin manifest.
+- **Agent Plugins v1.0.0 conformance.** The generated `plugins/agent-plugins/charming/plugin.json` and `mcp.json` are each validated against the vendored `schemas/agent-plugins/1.0.0/*.schema.json`, plus three checks JSON Schema cannot express on its own: exactly one MCP server, type `streamable-http`, and no `headers` (the spec forbids embedding credentials in package data).
 
 ## Per-platform shape
 
@@ -63,9 +66,10 @@ Node 20.11 or newer (the generator uses `import.meta.dirname`). No dependencies,
 | Claude Code | `.claude-plugin/plugin.json`, `.mcp.json` with `"type": "http"` (a `url` with no `type` is read as stdio and skipped), catalog at `.claude-plugin/marketplace.json` |
 | Codex | `.codex-plugin/plugin.json` with the `interface` block the marketplace renders, `.mcp.json`, catalog at `.agents/plugins/marketplace.json` |
 | Gemini CLI | `gemini-extension.json` at the absolute repository root, remote MCP declared as `httpUrl`, context in `GEMINI.md` |
+| Agent Plugins (agent-plugins.org v1.0.0) | `plugin.json` and `mcp.json` at the package root (not nested, per spec §4.2/§6.1), `skills/charming/SKILL.md`; no marketplace catalog, since the spec defines no registry. Targets ChatGPT, Codex, Cursor, GitHub Copilot, Kiro, and VS Code as launch clients. |
 | OpenAI plugins directory | Submitted through the portal with the production MCP URL; the skill bundle comes from `SKILL.md`. No repository layout requirement. |
 
-Claude and other chat clients connect to the hosted endpoint directly and need no package.
+Claude and other chat clients connect to the hosted endpoint directly and need no package. Claude Code reads its own `.claude-plugin/plugin.json` and `.mcp.json`, not the Agent Plugins layout, so it keeps its separate target.
 
 ## Changing a shared fact
 

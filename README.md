@@ -90,7 +90,7 @@ This repository is the canonical source for every public Charming integration pa
 | Kind | Artifact |
 |------|----------|
 | Platform-neutral (edit these) | [`canonical/facts.json`](./canonical/facts.json), [`SKILL.md`](./SKILL.md), [`AGENTS.md`](./AGENTS.md), [`.cursor/rules/charming.mdc`](./.cursor/rules/charming.mdc), [`charming-icon.png`](./charming-icon.png) |
-| Adapter (generated) | `plugins/cursor/charming`, `plugins/claude-code/charming`, `plugins/codex/charming`, `gemini-extension.json`, `GEMINI.md`, the three marketplace catalogs |
+| Adapter (generated) | `plugins/cursor/charming`, `plugins/claude-code/charming`, `plugins/codex/charming`, `plugins/agent-plugins/charming` (a portable [Agent Plugins](https://agent-plugins.org/) v1.0.0 package), `gemini-extension.json`, `GEMINI.md`, the three marketplace catalogs |
 
 ```bash
 node scripts/build-packages.mjs          # regenerate every adapter

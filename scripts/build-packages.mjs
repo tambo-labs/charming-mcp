@@ -12,6 +12,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
+import { validate as validateJsonSchema } from './lib/json-schema-lite.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CHECK = process.argv.includes('--check');
@@ -117,6 +118,12 @@ const TOOL_NAMES = facts.tools.map((t) => t.name);
 const canonicalSkill = read('SKILL.md');
 const canonicalAgents = read('AGENTS.md');
 const canonicalRule = read('.cursor/rules/charming.mdc');
+
+// Vendored, not fetched: the Agent Plugins spec forbids a client (and by
+// extension a build) retrieving schemas over the network at load time.
+const AGENT_PLUGINS_SCHEMA_VERSION = '1.0.0';
+const agentPluginsPluginSchema = JSON.parse(read(`schemas/agent-plugins/${AGENT_PLUGINS_SCHEMA_VERSION}/plugin.schema.json`));
+const agentPluginsMcpSchema = JSON.parse(read(`schemas/agent-plugins/${AGENT_PLUGINS_SCHEMA_VERSION}/mcp.schema.json`));
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
@@ -225,6 +232,34 @@ function packageReadme(platform, installSteps, headerImage) {
 
 /** platform -> { dir, files, assets } */
 const PLATFORMS = {
+  // agent-plugins.org v1.0.0: plugin.json and mcp.json sit at the package
+  // root (no client-specific subdirectory), per spec §4.2 and §6.1. The
+  // manifest schema is closed, so client-specific data would go under an
+  // `extensions` namespace instead of a top-level field; Charming has none
+  // to add yet. mcp.json carries no `headers` and no `env`: Agent Plugins
+  // defines no credential mechanism, and Charming's OAuth is client-managed.
+  'agent-plugins': {
+    dir: 'plugins/agent-plugins/charming',
+    files: {
+      'plugin.json': json({
+        $schema: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json',
+        name: facts.product.slug,
+        version: facts.version,
+        description: facts.product.packageDescription,
+        author,
+        homepage: facts.urls.website,
+        repository: facts.urls.repository,
+        license: facts.product.license,
+        keywords: facts.product.keywords,
+      }),
+      'mcp.json': json({
+        $schema: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json',
+        mcpServers: { charming: { type: 'streamable-http', url: MCP } },
+      }),
+      'skills/charming/SKILL.md': skillFor('agent-plugins'),
+    },
+    assets: {},
+  },
   cursor: {
     dir: 'plugins/cursor/charming',
     files: {
@@ -607,6 +642,33 @@ for (const [platform, spec] of Object.entries(PLATFORMS)) {
   if (!existsSync(join(ROOT, spec.dir, 'skills/charming/SKILL.md'))) {
     fail(`${platform}: skills/charming/SKILL.md is missing`);
   }
+}
+
+// Agent Plugins v1.0.0 conformance, checked against the vendored schemas
+// rather than re-deriving the shape the generator above already assumes, so
+// a schema-breaking edit to the generator itself is caught here too.
+{
+  const dir = PLATFORMS['agent-plugins'].dir;
+  const manifest = JSON.parse(PLATFORMS['agent-plugins'].files['plugin.json']);
+  const mcp = JSON.parse(PLATFORMS['agent-plugins'].files['mcp.json']);
+
+  for (const err of validateJsonSchema(agentPluginsPluginSchema, manifest)) {
+    fail(`${dir}/plugin.json does not conform to ${agentPluginsPluginSchema.$id}: ${err}`);
+  }
+  for (const err of validateJsonSchema(agentPluginsMcpSchema, mcp)) {
+    fail(`${dir}/mcp.json does not conform to ${agentPluginsMcpSchema.$id}: ${err}`);
+  }
+  if (mcp.$schema !== manifest.$schema.replace('plugin.schema.json', 'mcp.schema.json')) {
+    fail(`${dir}/mcp.json targets a different Agent Plugins version than ${dir}/plugin.json`);
+  }
+  const servers = Object.entries(mcp.mcpServers ?? {});
+  if (servers.length !== 1) {
+    fail(`${dir}/mcp.json must declare exactly one MCP server, found ${servers.length}`);
+  }
+  const [, server] = servers[0] ?? [];
+  if (server?.type !== 'streamable-http') fail(`${dir}/mcp.json server must use type "streamable-http"`);
+  if (server?.url !== MCP) fail(`${dir}/mcp.json server url must be ${MCP}`);
+  if (server && 'headers' in server) fail(`${dir}/mcp.json must not declare headers; the spec forbids embedded credentials`);
 }
 
 // Marketplace entries must point at a real package directory holding its manifest.
