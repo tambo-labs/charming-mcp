@@ -12,7 +12,10 @@
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { validate as validateJsonSchema } from './lib/json-schema-lite.mjs';
+// Draft 2020-12 entry point: both vendored schemas declare
+// $schema: https://json-schema.org/draft/2020-12/schema, and the default
+// `ajv` export only understands draft-07.
+import Ajv2020 from 'ajv/dist/2020.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CHECK = process.argv.includes('--check');
@@ -124,6 +127,13 @@ const canonicalRule = read('.cursor/rules/charming.mdc');
 const AGENT_PLUGINS_SCHEMA_VERSION = '1.0.0';
 const agentPluginsPluginSchema = JSON.parse(read(`schemas/agent-plugins/${AGENT_PLUGINS_SCHEMA_VERSION}/plugin.schema.json`));
 const agentPluginsMcpSchema = JSON.parse(read(`schemas/agent-plugins/${AGENT_PLUGINS_SCHEMA_VERSION}/mcp.schema.json`));
+
+// allErrors so one run reports every violation instead of stopping at the
+// first; strict (the default, kept explicit) so an unrecognized keyword in a
+// future vendored schema is a thrown error, not a silently ignored no-op.
+const ajv = new Ajv2020({ allErrors: true, strict: true });
+const validateAgentPluginsManifest = ajv.compile(agentPluginsPluginSchema);
+const validateAgentPluginsMcp = ajv.compile(agentPluginsMcpSchema);
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
@@ -652,11 +662,15 @@ for (const [platform, spec] of Object.entries(PLATFORMS)) {
   const manifest = JSON.parse(PLATFORMS['agent-plugins'].files['plugin.json']);
   const mcp = JSON.parse(PLATFORMS['agent-plugins'].files['mcp.json']);
 
-  for (const err of validateJsonSchema(agentPluginsPluginSchema, manifest)) {
-    fail(`${dir}/plugin.json does not conform to ${agentPluginsPluginSchema.$id}: ${err}`);
+  if (!validateAgentPluginsManifest(manifest)) {
+    for (const err of validateAgentPluginsManifest.errors) {
+      fail(`${dir}/plugin.json does not conform to ${agentPluginsPluginSchema.$id}: ${err.instancePath || '(root)'} ${err.message}`);
+    }
   }
-  for (const err of validateJsonSchema(agentPluginsMcpSchema, mcp)) {
-    fail(`${dir}/mcp.json does not conform to ${agentPluginsMcpSchema.$id}: ${err}`);
+  if (!validateAgentPluginsMcp(mcp)) {
+    for (const err of validateAgentPluginsMcp.errors) {
+      fail(`${dir}/mcp.json does not conform to ${agentPluginsMcpSchema.$id}: ${err.instancePath || '(root)'} ${err.message}`);
+    }
   }
   if (mcp.$schema !== manifest.$schema.replace('plugin.schema.json', 'mcp.schema.json')) {
     fail(`${dir}/mcp.json targets a different Agent Plugins version than ${dir}/plugin.json`);

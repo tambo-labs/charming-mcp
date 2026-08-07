@@ -16,7 +16,6 @@ AGENTS.md                  canonical coding-agent guide
 charming-icon.png          canonical icon
 scripts/build-packages.mjs generator and drift checker
 scripts/verify-checker.mjs proves the drift checker fails on each drift class
-scripts/lib/json-schema-lite.mjs dependency-free validator for the vendored schemas below
 schemas/agent-plugins/1.0.0/     vendored plugin.schema.json and mcp.schema.json (never fetched at build time)
 .gitattributes             marks generated paths, which JSON cannot say for itself
 plugins/<platform>/charming self-contained adapter package (generated)
@@ -36,13 +35,14 @@ Generated markdown carries a do-not-edit banner. Generated JSON cannot hold a co
 ## Commands
 
 ```bash
+npm ci                                    # install ajv (the one dependency)
 node scripts/build-packages.mjs           # write the adapters
 node scripts/build-packages.mjs --check   # fail on drift
 node scripts/build-packages.mjs --release # stamp the release marker at the current version
 node scripts/verify-checker.mjs           # prove the drift checker still catches every class
 ```
 
-Node 20.11 or newer (the generator uses `import.meta.dirname`). No third-party dependencies, no install step: schema validation for the Agent Plugins package uses the hand-written, dependency-free `scripts/lib/json-schema-lite.mjs` against the vendored schemas in `schemas/agent-plugins/1.0.0/`, not a fetched copy. CI runs the last two.
+Node 20.11 or newer (the generator uses `import.meta.dirname`). Run `npm ci` once before any command below. The generator's only dependency is `ajv`, which checks the generated Agent Plugins manifests against the vendored schemas in `schemas/agent-plugins/1.0.0/` (never fetched at build time). We use a real JSON Schema validator instead of writing our own; `ajv` is a devDependency only and reaches no package we ship. CI runs `npm ci`, then the check and the verify script.
 
 ## What the check enforces
 

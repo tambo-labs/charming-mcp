@@ -1,0 +1,8 @@
+{
+  "name": "charming-mcp",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "ajv": "8.20.0"
+  }
+}
