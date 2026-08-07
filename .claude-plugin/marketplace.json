@@ -10,7 +10,7 @@
       "name": "charming",
       "source": "./plugins/claude-code/charming",
       "description": "Create, update, and inspect Charming-hosted interactive web apps.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "Tambo",
         "url": "https://github.com/tambo-labs"

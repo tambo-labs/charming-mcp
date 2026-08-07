@@ -20,7 +20,7 @@
       "org": "https://github.com/tambo-labs"
     }
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "ownedHosts": [
     "charm.ing",
     "usecharming.com"
@@ -166,6 +166,18 @@
     {
       "name": "unset_public",
       "summary": "Make a public app private again; anonymous visitors can no longer open it."
+    },
+    {
+      "name": "set_template",
+      "summary": "Publish an app as a template so anyone opening its URL gets their own brand-new copy, leaving the original untouched. Pass `listed: true` to also list it in the public directory. Omitting `listed` leaves the current listing state alone. The app must be claimed first."
+    },
+    {
+      "name": "unset_template",
+      "summary": "Stop treating an app as a template: new visitors can no longer copy it, and any public listing is cleared. Existing copies survive."
+    },
+    {
+      "name": "search_templates",
+      "summary": "Search the public Charming template directory by keyword. Check here for an existing template before calling `create_app`, or when the user asks what templates exist. Each hit carries a `copyUrl` a visitor can open to mint their own independent copy with no login."
     }
   ],
   "branding": {
