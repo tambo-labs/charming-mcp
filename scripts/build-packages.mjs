@@ -547,7 +547,8 @@ for (const { path: file, symlink } of REPO_FILES) {
     }
   }
 
-  // Qualifiers are allowed between the count and the noun ("21 MCP tools").
+  // Qualifiers are allowed between the count and the noun, as in "<n> MCP tools".
+  // Spelling that example with a digit would make this scan fail on its own source.
   for (const match of body.matchAll(/\b(\d+)\s+(?:[A-Za-z][\w-]*\s+){0,2}tools\b/g)) {
     if (Number(match[1]) !== facts.tools.length) {
       fail(`${rel}: says "${match[0]}" but canonical/facts.json declares ${facts.tools.length}`);

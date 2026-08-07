@@ -43,7 +43,7 @@ Read https://usecharming.com/start.md then help me create my first app.
 ## Tools
 
 <!-- generated:tools-table -->
-Charming exposes 21 tools. Connected clients discover them automatically via `tools/list`.
+Charming exposes 24 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -68,6 +68,9 @@ Charming exposes 21 tools. Connected clients discover them automatically via `to
 | `list_app_shares` | List active and pending share invites for one of your apps. |
 | `set_public` | Make an app public: anyone with the URL can open it with no login and read AND write its shared data. Warn the user that every anonymous visitor shares one data pool, so anyone with the URL can overwrite or wipe it. |
 | `unset_public` | Make a public app private again; anonymous visitors can no longer open it. |
+| `set_template` | Publish an app as a template so anyone opening its URL gets their own brand-new copy, leaving the original untouched. Pass `listed: true` to also list it in the public directory. Omitting `listed` leaves the current listing state alone. The app must be claimed first. |
+| `unset_template` | Stop treating an app as a template: new visitors can no longer copy it, and any public listing is cleared. Existing copies survive. |
+| `search_templates` | Search the public Charming template directory by keyword. Check here for an existing template before calling `create_app`, or when the user asks what templates exist. Each hit carries a `copyUrl` a visitor can open to mint their own independent copy with no login. |
 <!-- /generated:tools-table -->
 
 ## Use with a coding agent
