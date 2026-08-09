@@ -155,6 +155,18 @@ const CASES = [
     mutate: (dir) => rmSync(join(dir, 'canonical/version-lock.json')),
   },
   {
+    // The Agent Plugins schema, not just the generator's own assumptions,
+    // must reject this: an uppercase slug violates the plugin.json `name`
+    // pattern in schemas/agent-plugins/1.0.0/plugin.schema.json (spec §5.5).
+    name: 'agent-plugins manifest name violates the naming schema',
+    expect: 'plugin.json does not conform to https://agent-plugins.org/schemas/1.0.0/plugin.schema.json',
+    mutate: (dir) => {
+      const facts = readJson(dir, 'canonical/facts.json');
+      facts.product.slug = 'Charming';
+      writeJson(dir, 'canonical/facts.json', facts);
+    },
+  },
+  {
     name: 'stale branding in an extensionless file',
     expect: 'stale branding',
     mutate: (dir) => append(dir, '.gitattributes', '\n# buildy leftovers\n'),
