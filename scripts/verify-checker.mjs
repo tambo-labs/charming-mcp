@@ -131,10 +131,21 @@ const CASES = [
   },
   {
     // The version string is what every host uses to decide an installed plugin
-    // needs updating, so content may not move without it moving too.
+    // needs updating, so content may not move without it moving too. This case
+    // must start from the released version, not whatever version the branch
+    // running this script happens to carry, or a branch that already bumped
+    // once (per DISTRIBUTION.md, edits keep passing until the next bump) would
+    // make this fixture fail for reasons unrelated to what it tests.
     name: 'canonical content changed without a version bump',
     expect: 'bump "version" in canonical/facts.json',
-    mutate: (dir) => append(dir, 'SKILL.md', '\nOne more sentence of guidance.\n'),
+    mutate: (dir) => {
+      const facts = readJson(dir, 'canonical/facts.json');
+      const lock = readJson(dir, 'canonical/version-lock.json');
+      facts.version = lock.version;
+      writeJson(dir, 'canonical/facts.json', facts);
+      spawnSync(process.execPath, [join(dir, 'scripts/build-packages.mjs')], { encoding: 'utf8' });
+      append(dir, 'SKILL.md', '\nOne more sentence of guidance.\n');
+    },
   },
   {
     // version flows into every plugin manifest, so a bump without regenerating
