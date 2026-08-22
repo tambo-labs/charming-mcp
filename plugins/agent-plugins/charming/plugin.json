@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "charming",
-  "version": "0.3.0",
-  "description": "Create, update, and inspect Charming-hosted interactive web apps.",
+  "version": "0.3.1",
+  "description": "Create, update, and inspect Charming-hosted interactive web apps via the Charming MCP server.",
   "author": {
     "name": "Tambo",
     "url": "https://github.com/tambo-labs"
@@ -13,7 +13,11 @@
   "keywords": [
     "charming",
     "mcp",
+    "mcp-server",
     "web-apps",
-    "developer-tools"
+    "developer-tools",
+    "agent-skill",
+    "claude-code",
+    "ai-agent"
   ]
 }
