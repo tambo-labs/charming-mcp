@@ -1,0 +1,37 @@
+name: mcp-registry-publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - canonical/version-lock.json
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # required for OIDC auth with the MCP Registry
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Sync server.json version to canonical/facts.json
+        run: |
+          FACTS_VERSION=$(node -p "require('./canonical/facts.json').version")
+          jq --arg v "$FACTS_VERSION" '.version = $v' server.json > server.json.tmp
+          mv server.json.tmp server.json
+          echo "Publishing server.json at version $FACTS_VERSION:"
+          cat server.json
+
+      - name: Install mcp-publisher
+        run: |
+          curl -sfL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+          chmod +x mcp-publisher
+          sudo mv mcp-publisher /usr/local/bin/
+
+      - name: Login to MCP Registry
+        run: mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        run: mcp-publisher publish
