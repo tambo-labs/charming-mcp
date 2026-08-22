@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.tambo-labs/charming-mcp",
+  "title": "Charming",
+  "description": "Charming is a hosted MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients.",
+  "version": "0.3.1",
+  "websiteUrl": "https://usecharming.com/",
+  "repository": {
+    "url": "https://github.com/tambo-labs/charming-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://charm.ing/mcp"
+    }
+  ]
+}
