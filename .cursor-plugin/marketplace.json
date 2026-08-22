@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it stays live at that URL for anyone you share it with.",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "plugins": [
     {
       "name": "charming",
       "source": "./plugins/cursor/charming",
-      "description": "Create, update, and inspect Charming-hosted interactive web apps."
+      "description": "Create, update, and inspect Charming-hosted interactive web apps via the Charming MCP server."
     }
   ]
 }

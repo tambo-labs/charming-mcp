@@ -3,7 +3,7 @@
     "name": "Charming",
     "slug": "charming",
     "shortDescription": "Build and iterate hosted web apps",
-    "packageDescription": "Create, update, and inspect Charming-hosted interactive web apps.",
+    "packageDescription": "Create, update, and inspect Charming-hosted interactive web apps via the Charming MCP server.",
     "longDescription": "Charming is an MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients, and it stays live at that URL for anyone you share it with.",
     "category": "Developer Tools",
     "brandColor": "#F77348",
@@ -11,8 +11,12 @@
     "keywords": [
       "charming",
       "mcp",
+      "mcp-server",
       "web-apps",
-      "developer-tools"
+      "developer-tools",
+      "agent-skill",
+      "claude-code",
+      "ai-agent"
     ],
     "publisher": {
       "name": "Tambo",
@@ -20,7 +24,7 @@
       "org": "https://github.com/tambo-labs"
     }
   },
-  "version": "0.3.0",
+  "version": "0.3.1",
   "ownedHosts": [
     "charm.ing",
     "usecharming.com"
