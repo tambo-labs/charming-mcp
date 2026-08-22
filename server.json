@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.tambo-labs/charming-mcp",
   "title": "Charming",
-  "description": "Charming is a hosted MCP server that generates, hosts, and updates small interactive web apps. Each app gets a real URL, persistent storage, and inline rendering in MCP Apps-capable clients.",
+  "description": "Hosted MCP server that generates, hosts, and updates interactive web apps with real URLs.",
   "version": "0.3.1",
   "websiteUrl": "https://usecharming.com/",
   "repository": {
