@@ -1,6 +1,6 @@
 {
   "name": "charming",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Create, update, and inspect Charming-hosted interactive web apps via the Charming MCP server.",
   "contextFileName": "GEMINI.md",
   "mcpServers": {
