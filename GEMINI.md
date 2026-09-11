@@ -46,7 +46,7 @@ Generated app code must follow this shape:
 
 ## Tools
 
-Charming exposes 24 MCP tools; connected clients discover them via `tools/list`. Core authoring: `create_app`, `update_app`, `get_app`, `get_app_source`, `list_apps`, `delete_app`. Templates: `search_templates` finds an existing one to copy before you build from scratch, and `set_template` / `unset_template` publish or retract your own. See the [README](./README.md) for the full table and [usecharming.com/llms-full.txt](https://usecharming.com/llms-full.txt) for the complete authoring manual.
+Charming exposes MCP tools; connected clients discover them via `tools/list`. Core authoring: `create_app`, `update_app`, `get_app`, `get_app_source`, `list_apps`, `delete_app`. Templates: `search_templates` finds an existing one to copy before you build from scratch, and `set_template` / `unset_template` publish or retract your own. See the [README](./README.md) for the full table and [usecharming.com/llms-full.txt](https://usecharming.com/llms-full.txt) for the complete authoring manual.
 
 ## Docs
 

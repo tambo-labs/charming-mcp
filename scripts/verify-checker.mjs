@@ -104,12 +104,11 @@ const CASES = [
     },
   },
   {
-    // Expects AGENTS.md specifically: it phrases the count as "N MCP tools", so a
-    // count check that only matches a bare "N tools" leaves this file stale.
     name: 'tool added without updating a qualified count ("N MCP tools")',
     expect: 'AGENTS.md: says',
     mutate: (dir) => {
       const facts = readJson(dir, 'canonical/facts.json');
+      append(dir, 'AGENTS.md', `\nCharming exposes ${facts.tools.length} MCP tools.\n`);
       facts.tools.push({ name: 'do_thing', summary: 'Does a thing.' });
       writeJson(dir, 'canonical/facts.json', facts);
     },
@@ -224,6 +223,24 @@ const report = (ok, label, detail) => {
   rmSync(dir, { recursive: true, force: true });
 }
 
+{
+  const dir = scratch();
+  try {
+    const facts = readJson(dir, 'canonical/facts.json');
+    facts.tools.push({ name: 'do_thing', summary: 'Does a thing.' });
+    const version = facts.version.split('.').map(Number);
+    version[2] += 1;
+    facts.version = version.join('.');
+    writeJson(dir, 'canonical/facts.json', facts);
+    const generated = spawnSync(process.execPath, [join(dir, 'scripts/build-packages.mjs')], { encoding: 'utf8' });
+    const checked = check(dir);
+    const ok = generated.status === 0 && checked.code === 0;
+    report(ok, 'tool addition with a version bump regenerates valid packages', ok ? '' : `${generated.stdout}${generated.stderr}${checked.output}`.trim().slice(0, 1000));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 for (const testCase of CASES) {
   const dir = scratch();
   if (testCase.name === 'asset path escaping the repository') {
@@ -242,5 +259,5 @@ for (const testCase of CASES) {
   if (existsSync(stray)) rmSync(stray, { force: true });
 }
 
-console.log(`\n${CASES.length + 1} checks, ${failures} failing`);
+console.log(`\n${CASES.length + 2} checks, ${failures} failing`);
 process.exit(failures === 0 ? 0 : 1);

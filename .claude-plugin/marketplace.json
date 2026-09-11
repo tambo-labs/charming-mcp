@@ -10,7 +10,7 @@
       "name": "charming",
       "source": "./plugins/claude-code/charming",
       "description": "Create, update, and inspect Charming-hosted interactive web apps via the Charming MCP server.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "author": {
         "name": "Tambo",
         "url": "https://github.com/tambo-labs"
