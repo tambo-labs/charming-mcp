@@ -43,7 +43,7 @@ Read https://usecharming.com/start.md then help me create my first app.
 ## Tools
 
 <!-- generated:tools-table -->
-Charming exposes 24 tools. Connected clients discover them automatically via `tools/list`.
+Charming exposes 33 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -71,6 +71,15 @@ Charming exposes 24 tools. Connected clients discover them automatically via `to
 | `set_template` | Publish an app as a template so anyone opening its URL gets their own brand-new copy, leaving the original untouched. Pass `listed: true` to also list it in the public directory. Omitting `listed` leaves the current listing state alone. The app must be claimed first. |
 | `unset_template` | Stop treating an app as a template: new visitors can no longer copy it, and any public listing is cleared. Existing copies survive. |
 | `search_templates` | Search the public Charming template directory by keyword. Check here for an existing template before calling `create_app`, or when the user asks what templates exist. Each hit carries a `copyUrl` a visitor can open to mint their own independent copy with no login. |
+| `acknowledge_feedback_responses` | Acknowledge feedback responses after the agent has processed them. |
+| `cancel_app_build` | Use this to cancel an accepted app build before it publishes. |
+| `create_routine` | Use this when the user wants an app op to run on its own, on a timer — no chat needs to be open. |
+| `delete_routine` | Use this to stop and remove a Routine. |
+| `get_app_build` | Use this to inspect an accepted app build without running or publishing it. |
+| `list_feedback_responses` | Fetch unread Charming staff responses to feedback submitted by this authenticated account. |
+| `list_routines` | Use this to see the caller's Routines across their apps. |
+| `read_docs` | Read Charming documentation without web access. |
+| `update_routine` | Use this to change a Routine's `interval`, or enable/disable it. |
 <!-- /generated:tools-table -->
 
 ## Use with a coding agent
