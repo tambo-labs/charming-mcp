@@ -1,7 +1,7 @@
 {
   "name": "charming",
   "displayName": "Charming",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Create, update, and inspect Charming-hosted interactive web apps via the Charming MCP server.",
   "author": {
     "name": "Tambo",
