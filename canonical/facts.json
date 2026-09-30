@@ -24,7 +24,7 @@
       "org": "https://github.com/tambo-labs"
     }
   },
-  "version": "0.3.3",
+  "version": "0.3.4",
   "ownedHosts": [
     "charm.ing",
     "usecharming.com"
@@ -218,6 +218,22 @@
     {
       "name": "update_routine",
       "summary": "Use this to change a Routine's `interval`, or enable/disable it."
+    },
+    {
+      "name": "create_webhook",
+      "summary": "Use this when an external service (Zapier, a payment provider, a partner backend) needs to call one of an app's ops directly."
+    },
+    {
+      "name": "delete_webhook",
+      "summary": "Use this to remove a Webhook."
+    },
+    {
+      "name": "list_webhooks",
+      "summary": "Use this to see the Webhooks on every app the caller can edit, with delivery state."
+    },
+    {
+      "name": "update_webhook",
+      "summary": "Use this to rename a Webhook, enable/disable it, or rotate its secret."
     }
   ],
   "branding": {

@@ -43,7 +43,7 @@ Read https://usecharming.com/start.md then help me create my first app.
 ## Tools
 
 <!-- generated:tools-table -->
-Charming exposes 33 tools. Connected clients discover them automatically via `tools/list`.
+Charming exposes 37 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -80,6 +80,10 @@ Charming exposes 33 tools. Connected clients discover them automatically via `to
 | `list_routines` | Use this to see the caller's Routines across their apps. |
 | `read_docs` | Read Charming documentation without web access. |
 | `update_routine` | Use this to change a Routine's `interval`, or enable/disable it. |
+| `create_webhook` | Use this when an external service (Zapier, a payment provider, a partner backend) needs to call one of an app's ops directly. |
+| `delete_webhook` | Use this to remove a Webhook. |
+| `list_webhooks` | Use this to see the Webhooks on every app the caller can edit, with delivery state. |
+| `update_webhook` | Use this to rename a Webhook, enable/disable it, or rotate its secret. |
 <!-- /generated:tools-table -->
 
 ## Use with a coding agent
