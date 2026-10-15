@@ -24,7 +24,7 @@
       "org": "https://github.com/tambo-labs"
     }
   },
-  "version": "0.3.4",
+  "version": "0.3.5",
   "ownedHosts": [
     "charm.ing",
     "usecharming.com"
@@ -188,20 +188,12 @@
       "summary": "Acknowledge feedback responses after the agent has processed them."
     },
     {
-      "name": "cancel_app_build",
-      "summary": "Use this to cancel an accepted app build before it publishes."
-    },
-    {
       "name": "create_routine",
       "summary": "Use this when the user wants an app op to run on its own, on a timer — no chat needs to be open."
     },
     {
       "name": "delete_routine",
       "summary": "Use this to stop and remove a Routine."
-    },
-    {
-      "name": "get_app_build",
-      "summary": "Use this to inspect an accepted app build without running or publishing it."
     },
     {
       "name": "list_feedback_responses",
@@ -234,6 +226,14 @@
     {
       "name": "update_webhook",
       "summary": "Use this to rename a Webhook, enable/disable it, or rotate its secret."
+    },
+    {
+      "name": "copy_app",
+      "summary": "Use this to make the signed-in user a private copy of an existing app in one call, without reading or re-sending its source."
+    },
+    {
+      "name": "resolve_handoff",
+      "summary": "Resolve a Charming handoff reference into diagnostic data about a problem in one of the caller's apps."
     }
   ],
   "branding": {
