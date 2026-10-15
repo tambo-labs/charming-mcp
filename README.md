@@ -72,10 +72,8 @@ Charming exposes 37 tools. Connected clients discover them automatically via `to
 | `unset_template` | Stop treating an app as a template: new visitors can no longer copy it, and any public listing is cleared. Existing copies survive. |
 | `search_templates` | Search the public Charming template directory by keyword. Check here for an existing template before calling `create_app`, or when the user asks what templates exist. Each hit carries a `copyUrl` a visitor can open to mint their own independent copy with no login. |
 | `acknowledge_feedback_responses` | Acknowledge feedback responses after the agent has processed them. |
-| `cancel_app_build` | Use this to cancel an accepted app build before it publishes. |
 | `create_routine` | Use this when the user wants an app op to run on its own, on a timer — no chat needs to be open. |
 | `delete_routine` | Use this to stop and remove a Routine. |
-| `get_app_build` | Use this to inspect an accepted app build without running or publishing it. |
 | `list_feedback_responses` | Fetch unread Charming staff responses to feedback submitted by this authenticated account. |
 | `list_routines` | Use this to see the caller's Routines across their apps. |
 | `read_docs` | Read Charming documentation without web access. |
@@ -84,6 +82,8 @@ Charming exposes 37 tools. Connected clients discover them automatically via `to
 | `delete_webhook` | Use this to remove a Webhook. |
 | `list_webhooks` | Use this to see the Webhooks on every app the caller can edit, with delivery state. |
 | `update_webhook` | Use this to rename a Webhook, enable/disable it, or rotate its secret. |
+| `copy_app` | Use this to make the signed-in user a private copy of an existing app in one call, without reading or re-sending its source. |
+| `resolve_handoff` | Resolve a Charming handoff reference into diagnostic data about a problem in one of the caller's apps. |
 <!-- /generated:tools-table -->
 
 ## Use with a coding agent
