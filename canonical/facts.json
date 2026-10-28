@@ -24,7 +24,7 @@
       "org": "https://github.com/tambo-labs"
     }
   },
-  "version": "0.3.4",
+  "version": "0.3.5",
   "ownedHosts": [
     "charm.ing",
     "usecharming.com"
@@ -234,6 +234,14 @@
     {
       "name": "update_webhook",
       "summary": "Use this to rename a Webhook, enable/disable it, or rotate its secret."
+    },
+    {
+      "name": "copy_app",
+      "summary": "Use this to make the signed-in user a private copy of an existing app in one call, without reading or re-sending its source."
+    },
+    {
+      "name": "resolve_handoff",
+      "summary": "Resolve a Charming handoff reference into diagnostic data about a problem in one of the caller's apps."
     }
   ],
   "branding": {

@@ -43,7 +43,7 @@ Read https://usecharming.com/start.md then help me create my first app.
 ## Tools
 
 <!-- generated:tools-table -->
-Charming exposes 37 tools. Connected clients discover them automatically via `tools/list`.
+Charming exposes 39 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -84,6 +84,8 @@ Charming exposes 37 tools. Connected clients discover them automatically via `to
 | `delete_webhook` | Use this to remove a Webhook. |
 | `list_webhooks` | Use this to see the Webhooks on every app the caller can edit, with delivery state. |
 | `update_webhook` | Use this to rename a Webhook, enable/disable it, or rotate its secret. |
+| `copy_app` | Use this to make the signed-in user a private copy of an existing app in one call, without reading or re-sending its source. |
+| `resolve_handoff` | Resolve a Charming handoff reference into diagnostic data about a problem in one of the caller's apps. |
 <!-- /generated:tools-table -->
 
 ## Use with a coding agent
