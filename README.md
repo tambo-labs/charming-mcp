@@ -127,7 +127,7 @@ The adapters are not published yet; publishing each one is tracked separately. S
 
 [![Built with Composio](https://composio.dev/built-with-composio.svg)](https://composio.dev)
 
-Charming uses [Composio](https://composio.dev) to connect apps with external services such as Gmail, Google Drive, and GitHub. Composio holds each OAuth token and runs each connector call; Charming decides whether a call may run and whose connection serves it. See [Connectors](https://charm.ing/docs/capabilities/connectors).
+Charming uses [Composio](https://composio.dev) to connect apps with external services such as Gmail, Google Drive, and GitHub. Composio holds each OAuth token and runs each connector call; Charming decides whether a call may run and whose connection serves it.
 
 ## Publisher
 
