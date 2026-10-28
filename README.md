@@ -123,6 +123,12 @@ The adapters are not published yet; publishing each one is tracked separately. S
 - OpenAPI spec: [charm.ing/.well-known/openapi.json](https://charm.ing/.well-known/openapi.json)
 - Docs: [usecharming.com/docs](https://usecharming.com/docs)
 
+## Built with Composio
+
+[![Built with Composio](https://composio.dev/built-with-composio.svg)](https://composio.dev)
+
+Charming uses [Composio](https://composio.dev) to connect apps with external services such as Gmail, Google Drive, and GitHub. Composio holds each OAuth token and runs each connector call; Charming decides whether a call may run and whose connection serves it. See [Connectors](https://charm.ing/docs/capabilities/connectors).
+
 ## Publisher
 
 Published by [Tambo](https://tambo.co).
