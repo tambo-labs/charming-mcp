@@ -24,7 +24,7 @@
       "org": "https://github.com/tambo-labs"
     }
   },
-  "version": "0.3.5",
+  "version": "0.3.6",
   "ownedHosts": [
     "charm.ing",
     "usecharming.com"
@@ -242,6 +242,18 @@
     {
       "name": "resolve_handoff",
       "summary": "Resolve a Charming handoff reference into diagnostic data about a problem in one of the caller's apps."
+    },
+    {
+      "name": "get_app_revision",
+      "summary": "Use this to read what an earlier revision contained before restoring it."
+    },
+    {
+      "name": "list_app_revisions",
+      "summary": "Use this to see an app’s History before undoing a change."
+    },
+    {
+      "name": "restore_app_revision",
+      "summary": "Use this to undo a change: it saves an earlier revision’s source as the app’s new current revision."
     }
   ],
   "branding": {
