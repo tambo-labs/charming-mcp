@@ -43,7 +43,7 @@ Read https://usecharming.com/start.md then help me create my first app.
 ## Tools
 
 <!-- generated:tools-table -->
-Charming exposes 39 tools. Connected clients discover them automatically via `tools/list`.
+Charming exposes 42 tools. Connected clients discover them automatically via `tools/list`.
 
 | Tool | What it does |
 |------|-------------|
@@ -86,6 +86,9 @@ Charming exposes 39 tools. Connected clients discover them automatically via `to
 | `update_webhook` | Use this to rename a Webhook, enable/disable it, or rotate its secret. |
 | `copy_app` | Use this to make the signed-in user a private copy of an existing app in one call, without reading or re-sending its source. |
 | `resolve_handoff` | Resolve a Charming handoff reference into diagnostic data about a problem in one of the caller's apps. |
+| `get_app_revision` | Use this to read what an earlier revision contained before restoring it. |
+| `list_app_revisions` | Use this to see an app’s History before undoing a change. |
+| `restore_app_revision` | Use this to undo a change: it saves an earlier revision’s source as the app’s new current revision. |
 <!-- /generated:tools-table -->
 
 ## Use with a coding agent
